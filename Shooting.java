@@ -30,78 +30,78 @@ public class Shooting extends JFrame{
 	JPanel startPanel;
 	DrawPanel panel;
 
-	static String player_name; //�÷��̾� �̸� ����
+	static String player_name; //플레이어 이름 변수
 	JLabel nameLabel;
 	JLabel scoreLabel;
 	JLabel levelLabel;
 	JLabel highName;
 
-	Timer t; //����� Ÿ�̸�
-	Timer at; //���� Ÿ�̸�
+	Timer t; //비행기 타이머
+	Timer at; //공격 타이머
 
 
-	int INDEX = 3; //������ ī��Ʈ
-	int CountE = 0; //����Ű Ƚ�� ī��Ʈ
+	int INDEX = 3; //생명력 카운트
+	int CountE = 0; //엔터키 횟수 카운트
 
-	int moveYM = 3; //���� y�� ������
-	int moveXM = 2; //���� x�� ������
+	int moveYM = 3; //몬스터 y축 움직임
+	int moveXM = 2; //몬스터 x축 움직임
 
-	int score = 0; //���� ī��Ʈ
-	int level = 1; //���� ī��Ʈ
+	int score = 0; //점수 카운트
+	int level = 1; //레벨 카운트
 
-	int count = 0; //Ÿ�̸� ī��Ʈ
+	int count = 0; //타이머 카운트
 	
-	playerInfo highestPlayer; //�ְ�������
+	playerInfo highestPlayer; //최고득점자
 	
-	static File path = new File("."); //������
-	String root = path.getAbsolutePath(); //���
+	static File path = new File("."); //절대경로
+	String root = path.getAbsolutePath(); //경로
 
-	//�̹�������
-	Image gameScreen = new ImageIcon(getClass().getClassLoader().getResource("gameScreen.png")).getImage(); //���� ȭ��
-	Image explainScreen = new ImageIcon(getClass().getClassLoader().getResource("explainScreen.png")).getImage(); //����ȭ��
-	Image mainScreen = new ImageIcon(getClass().getClassLoader().getResource("mainScreen.png")).getImage(); //���ӽ��� �� ȭ��
-	Image finishScreen = new ImageIcon(getClass().getClassLoader().getResource("finishScreen.png")).getImage(); //���� ���� ȭ��
-	Image player = new ImageIcon(getClass().getClassLoader().getResource("player.png")).getImage(); //�÷��̾�
-	Image enemy1 = new ImageIcon(getClass().getClassLoader().getResource("enemy1.gif")).getImage(); //���� 1
-	Image enemy2 = new ImageIcon(getClass().getClassLoader().getResource("enemy2.gif")).getImage(); //���� 2
-	Image enemy3 = new ImageIcon(getClass().getClassLoader().getResource("enemy3.gif")).getImage(); //���� 3
-	Image enemy4 = new ImageIcon(getClass().getClassLoader().getResource("enemy4.gif")).getImage(); //���� 4
-	Image heart1 = new ImageIcon(getClass().getClassLoader().getResource("HEART.png")).getImage(); //��Ʈ
-	Image sub = new ImageIcon(getClass().getClassLoader().getResource("sub.png")).getImage(); //���� �����
+	//이미지파일
+	Image gameScreen = new ImageIcon(getClass().getClassLoader().getResource("gameScreen.png")).getImage(); //게임 화면
+	Image explainScreen = new ImageIcon(getClass().getClassLoader().getResource("explainScreen.png")).getImage(); //설명화면
+	Image mainScreen = new ImageIcon(getClass().getClassLoader().getResource("mainScreen.png")).getImage(); //게임시작 전 화면
+	Image finishScreen = new ImageIcon(getClass().getClassLoader().getResource("finishScreen.png")).getImage(); //게임 종료 화면
+	Image player = new ImageIcon(getClass().getClassLoader().getResource("player.png")).getImage(); //플레이어
+	Image enemy1 = new ImageIcon(getClass().getClassLoader().getResource("enemy1.gif")).getImage(); //몬스터 1
+	Image enemy2 = new ImageIcon(getClass().getClassLoader().getResource("enemy2.gif")).getImage(); //몬스터 2
+	Image enemy3 = new ImageIcon(getClass().getClassLoader().getResource("enemy3.gif")).getImage(); //몬스터 3
+	Image enemy4 = new ImageIcon(getClass().getClassLoader().getResource("enemy4.gif")).getImage(); //몬스터 4
+	Image heart1 = new ImageIcon(getClass().getClassLoader().getResource("HEART.png")).getImage(); //하트
+	Image sub = new ImageIcon(getClass().getClassLoader().getResource("sub.png")).getImage(); //서브 비행기
 	Image[] item = {
-			new ImageIcon(getClass().getClassLoader().getResource("HEART1.png")).getImage(), //������ ��Ʈ �߰�
-			new ImageIcon(getClass().getClassLoader().getResource("SUB1.png")).getImage(), //������ ���� ����� 
-			new ImageIcon(getClass().getClassLoader().getResource("HEART2.png")).getImage()};  //������ ��Ʈ ����
+			new ImageIcon(getClass().getClassLoader().getResource("HEART1.png")).getImage(), //아이템 하트 추가
+			new ImageIcon(getClass().getClassLoader().getResource("SUB1.png")).getImage(), //아이템 서브 비행기 
+			new ImageIcon(getClass().getClassLoader().getResource("HEART2.png")).getImage()};  //아이템 하트 삭제
 
 
 	private Image bImage;
 	private Graphics screenGraphics;
 
-	private boolean isMainScreen,isExplainScreen, isGameScreen, isFinishScreen; //ȭ�� ��ȯ�� ���� boolean �ڷ���
+	private boolean isMainScreen,isExplainScreen, isGameScreen, isFinishScreen; //화면 전환을 위한 boolean 자료형
 
-	static int PLANE_WIDTH = 50; //����� ����ũ��
-	static int PLANE_HEIGHT = 50; //����� ����ũ��
-	static int PANEL_WIDTH = 720; //�г� ���� ũ�� 
-	static int PANEL_HEIGHT = 1000; //�г� ���� ũ��
+	static int PLANE_WIDTH = 50; //비행기 가로크기
+	static int PLANE_HEIGHT = 50; //비행기 세로크기
+	static int PANEL_WIDTH = 720; //패널 가로 크기 
+	static int PANEL_HEIGHT = 1000; //패널 세로 크기
 
-	static int FRAME_WIDTH = PANEL_WIDTH+16; //������ ũ�� ���� ���
-	static int FRAME_HEIGHT = PANEL_HEIGHT+39; //������ ũ�� ���� ���
+	static int FRAME_WIDTH = PANEL_WIDTH+16; //프레임 크기 오차 계산
+	static int FRAME_HEIGHT = PANEL_HEIGHT+39; //프레임 크기 오차 계산
 
-	ArrayList<AirPlane> listAP = new ArrayList<AirPlane>(); //����� ��ü 
-	ArrayList<Attack> listAT = new ArrayList<Attack>(); //���� ��ü
-	ArrayList<MAttack1> listAM1 = new ArrayList<MAttack1>(); //���� �����ϴ� ��ü
-	ArrayList<MAttack2> listAM2 = new ArrayList<MAttack2>(); //���� �����ϴ� ��ü
-	ArrayList<Monster> listM1 = new ArrayList<Monster>();//��1 ��ü
-	ArrayList<Monster2> listM2 = new ArrayList<Monster2>();//��2 ��ü
-	ArrayList<Monster3> listM3 = new ArrayList<Monster3>(); //��3 ��ü
-	ArrayList<Monster4> listM4 = new ArrayList<Monster4>();  //��4 ��ü
-	ArrayList<ITEM> listI = new ArrayList<ITEM>(); //������ ��ü
-	ArrayList<Heart> listH = new ArrayList<Heart>(); // ��Ʈ ��ü
-	ArrayList<players> listN = new ArrayList<players>();//�÷��̾� �̸� ��ü
-	ArrayList<SubPlane> listSP = new ArrayList<SubPlane>(); //���� ����� ��ü
-	ArrayList<playerInfo> highScoreList = new ArrayList<>(); //�ְ� ������ ��ü
+	ArrayList<AirPlane> listAP = new ArrayList<AirPlane>(); //비행기 객체 
+	ArrayList<Attack> listAT = new ArrayList<Attack>(); //공격 객체
+	ArrayList<MAttack1> listAM1 = new ArrayList<MAttack1>(); //적이 공격하는 객체
+	ArrayList<MAttack2> listAM2 = new ArrayList<MAttack2>(); //적이 공격하는 객체
+	ArrayList<Monster> listM1 = new ArrayList<Monster>();//적1 객체
+	ArrayList<Monster2> listM2 = new ArrayList<Monster2>();//적2 객체
+	ArrayList<Monster3> listM3 = new ArrayList<Monster3>(); //적3 객체
+	ArrayList<Monster4> listM4 = new ArrayList<Monster4>();  //적4 객체
+	ArrayList<ITEM> listI = new ArrayList<ITEM>(); //아이템 객체
+	ArrayList<Heart> listH = new ArrayList<Heart>(); // 하트 객체
+	ArrayList<players> listN = new ArrayList<players>();//플레이어 이름 객체
+	ArrayList<SubPlane> listSP = new ArrayList<SubPlane>(); //서브 비행기 객체
+	ArrayList<playerInfo> highScoreList = new ArrayList<>(); //최고 득점자 객체
 	
-	//���� ��ü
+	//삭제 객체
 	ArrayList<Attack> ATRemove = new ArrayList<>(); 
 	ArrayList<MAttack1> MARemove1 = new ArrayList<>();
 	ArrayList<MAttack2> MARemove2 = new ArrayList<>();
@@ -114,14 +114,14 @@ public class Shooting extends JFrame{
 	ArrayList<Heart> HRemove = new ArrayList<>();
 	ArrayList<AirPlane>APRemove = new ArrayList<>();
 	
-	//Ű���� ������ �ڿ������� �ϱ� ����
+	//키보드 움직임 자연스럽게 하기 위함
 	boolean moveUp = false;
 	boolean moveDown = false;
 	boolean moveRight = false;
 	boolean moveLeft = false;
 	boolean checkSpace = false;
 
-	 //��� ����
+	 //배경 음악
 	public static void bgm() {
 		try {
 			File bgm = new File(path + "/res/bgm.wav");
@@ -134,7 +134,7 @@ public class Shooting extends JFrame{
 		}
 	}
 
-	 // ���Ͱ� ���� �� ���� �Ҹ�
+	 // 몬스터가 죽을 때 나는 소리
 	public static void boom() {
 		try {
 			File boom = new File(path + "/res/boom.wav");
@@ -147,7 +147,7 @@ public class Shooting extends JFrame{
 		}
 	}
 	
-	// ���� �б�
+	// 파일 읽기
 	public void  FILERead() throws IOException { 
 		File file = new File("HIGHEST.txt");
 		Scanner s = null;
@@ -172,7 +172,7 @@ public class Shooting extends JFrame{
 		}
 	}
 	
-	//���� ����
+	//파일 쓰기
 	public void RecordWrite() throws IOException{
 		if(highScoreList.size() >= 3) {
 			for(int i = 1; i<highScoreList.size(); i++) {
@@ -196,10 +196,10 @@ public class Shooting extends JFrame{
 		}
 	}
 
-	// ������ - Frame �⺻����, �г� �߰�
+	// 생성자 - Frame 기본설정, 패널 추가
 	Shooting() {			
 		
-		//���� �ҷ�����
+		//파일 불러오기
 		try {
 			FILERead();
 		} catch (IOException e) {
@@ -207,7 +207,7 @@ public class Shooting extends JFrame{
 			System.out.println("READ ERROR");
 		}
 		
-		//���� ��
+		//파일 비교
 		if(!highScoreList.isEmpty()) {
 			highestPlayer = highScoreList.get(0);
 			if(highScoreList.size()>=2) {
@@ -218,14 +218,14 @@ public class Shooting extends JFrame{
 			}
 		}
 		
-		//�̸� ����
+		//이름 저장
 		nameInput();
 
-		//Ÿ�̸� ����
+		//타이머 생성
 		t = new Timer(10, new Draw());
 		at = new Timer(100,new MakeA());
 
-		//�г�
+		//패널
 		panel = new DrawPanel();
 		panel.addKeyListener(panel);
 
@@ -233,14 +233,14 @@ public class Shooting extends JFrame{
 		scoreLabel = new JLabel("SCORE: " + score);
 		levelLabel = new JLabel("LEVEL: " + level);
 
-		if(!highScoreList.isEmpty()) { //�ְ������ڰ� ���� �� 
+		if(!highScoreList.isEmpty()) { //최고득점자가 있을 때 
 			highName = new JLabel("HIGHEST: " + highestPlayer.getName() + ", " + highestPlayer.get());
 			highName.setFont(new Font("FTLAB Hoony", Font.BOLD , 15));
 			highName.setBounds(500, 920, 200, 30);
 			highName.setHorizontalAlignment(JLabel.CENTER);
 			highName.setForeground(Color.white);
 			
-		}else { //�ְ������ڰ� ���� �� 
+		}else { //최고득점자가 없을 때 
 			highName = new JLabel("HIGHEST:"+" "+" NULL , NULL");
 			highName.setFont(new Font("FTLAB Hoony", Font.BOLD , 15));
 			highName.setBounds(500, 920, 200, 30);
@@ -248,25 +248,25 @@ public class Shooting extends JFrame{
 			highName.setForeground(Color.white);
 		}
 		
-		//�� �۾�ü
+		//라벨 글씨체
 		nameLabel.setFont(new Font("FTLAB Hoony", Font.BOLD , 15));
 		scoreLabel.setFont(new Font("FTLAB Hoony", Font.BOLD , 15));
 		levelLabel.setFont(new Font("FTLAB Hoony", Font.BOLD , 15));
 		
 		panel.setLayout(null);
 
-		//��ġ ����//setBounds(x,y,����,����) ������ġ
+		//위치 선정//setBounds(x,y,가로,세로) 절대위치
 		nameLabel.setBounds(370, 950, 100, 30);
 		scoreLabel.setBounds(490, 950, 100, 30); 
 		levelLabel.setBounds(610, 950, 100, 30);
 		
 
-		//��� ����
+		//가운데 정렬
 		nameLabel.setHorizontalAlignment(JLabel.CENTER);
 		scoreLabel.setHorizontalAlignment(JLabel.CENTER);
 		levelLabel.setHorizontalAlignment(JLabel.CENTER);
 
-		//�� ����
+		//색 선정
 		nameLabel.setForeground(Color.white);
 		scoreLabel.setForeground(Color.white);
 		levelLabel.setForeground(Color.white);
@@ -279,12 +279,12 @@ public class Shooting extends JFrame{
 		this.setTitle("SHOOTING");
 		this.setResizable(false);
 
-		init(); //boolean���� ���� mainScreen�׷��ֱ�
-		name(); //�̸� ����
-		bgm(); //�������
+		init(); //boolean형을 통해 mainScreen그려주기
+		name(); //이름 저장
+		bgm(); //배경음악
 	}
 
-	//boolean���� ���� mainScreen�׷��ֱ�
+	//boolean형을 통해 mainScreen그려주기
 	public void init() {
 		isMainScreen = true;
 		isExplainScreen = false;
@@ -292,12 +292,12 @@ public class Shooting extends JFrame{
 		isFinishScreen = false;
 	}
 
-	//�̸� ����
+	//이름 저장
 	public void name() {
 		listN.add(new players(player_name));
 	}
 	
-	//ȭ�� ��ȯ
+	//화면 전환
 	public void screenDraw(Graphics g) { 
 		if(isMainScreen==true) {
 			g.drawImage(mainScreen,0,0,null);
@@ -316,14 +316,14 @@ public class Shooting extends JFrame{
 		}
 	}
 
-	// ���� �� ����� �̸� �ޱ�
+	// 시작 전 사용자 이름 받기
 	public void nameInput() { 
 		for(;;) {
-			player_name = (String)JOptionPane.showInputDialog(this, "�÷��̾��� �̸��� �Է��ϼ���(3�� �̳�)", "SHOOTING GAME", JOptionPane.PLAIN_MESSAGE);
+			player_name = (String)JOptionPane.showInputDialog(this, "플레이어의 이름을 입력하세요(3자 이내)", "SHOOTING GAME", JOptionPane.PLAIN_MESSAGE);
 			if(player_name == null)
 				System.exit(0);
 			else if(player_name.length() > 3)
-				player_name = (String)JOptionPane.showInputDialog(this, "�÷��̾��� �̸��� �Է��ϼ���(3�� �̳�)", "SHOOTING GAME", JOptionPane.PLAIN_MESSAGE);
+				player_name = (String)JOptionPane.showInputDialog(this, "플레이어의 이름을 입력하세요(3자 이내)", "SHOOTING GAME", JOptionPane.PLAIN_MESSAGE);
 			else if(player_name.length() <= 3) {
 				break;
 			}
@@ -341,9 +341,9 @@ public class Shooting extends JFrame{
 			int x;
 			int y;
 
-			// ������� ������
+			// 비행기의 움직임
 			for(AirPlane ap : listAP) { 
-				//����Ű�� ������ ����
+				//방향키로 움직임 제어
 				if(moveUp == true) {
 					if(ap.y - 10 > 0)
 						ap.moveUP();
@@ -361,7 +361,7 @@ public class Shooting extends JFrame{
 						ap.moveLEFT();
 				}
 
-				if(checkSpace == true){ //�����̽��ٸ� ���� ����
+				if(checkSpace == true){ //스페이스바를 통한 공격
 					at.start();
 				}
 				else if(checkSpace == false) {
@@ -370,7 +370,7 @@ public class Shooting extends JFrame{
 			}
 
 
-			//���� list �߰�
+			//몬스터 list 추가
 			if(count % 100 == 0) {
 				x = (int)(Math.random()*690);
 				listM1.add(new Monster(x,0));
@@ -395,7 +395,7 @@ public class Shooting extends JFrame{
 			}
 
 
-			//���Ͱ� �ϴ� ���� list�߰�
+			//몬스터가 하는 공격 list추가
 			if(count % 200 == 0) {
 				for(Monster M1 : listM1) {
 					x = M1.getX();
@@ -421,7 +421,7 @@ public class Shooting extends JFrame{
 			int gY;
 			count++;
 
-			//����Ⱑ �ϴ� ���� list�߰�
+			//비행기가 하는 공격 list추가
 			for(AirPlane AP : listAP) {
 				gX = AP.getX();
 				gY = AP.getY();
@@ -430,7 +430,7 @@ public class Shooting extends JFrame{
 					listAT.add(new Attack(gX-13, gY-20));
 					listAT.add(new Attack(gX+63, gY-20));
 
-					//��������Ⱑ �ϴ� ���� list�߰�
+					//보조비행기가 하는 공격 list추가
 					if(count % 80 == 0) {
 						for(SubPlane SP : listSP) {
 							SPRemove.add(SP);
@@ -448,12 +448,12 @@ public class Shooting extends JFrame{
 	class DrawPanel extends JPanel implements KeyListener {
 		public void paintComponent(Graphics g) {
 
-			bImage = createImage(PANEL_WIDTH, PANEL_HEIGHT); //ȭ�� ä���
+			bImage = createImage(PANEL_WIDTH, PANEL_HEIGHT); //화면 채우기
 			screenGraphics = bImage.getGraphics();
 			screenDraw(screenGraphics);
 			g.drawImage(bImage,0,0,null);
 
-			//�������� 0�� �Ǿ����� ���� ���� ȭ��
+			//생명력이 0이 되었을때 게임 종료 화면
 			if(INDEX == 0) {
 				isGameScreen = false;
 				isFinishScreen = true;
@@ -497,9 +497,9 @@ public class Shooting extends JFrame{
 				levelLabel.setFont(new Font("FTLAB Hoony", Font.BOLD , 30));
 				highName.setFont(new Font("FTLAB Hoony", Font.BOLD , 30));
 				
-				//��ġ ������
+				//위치 재정렬
 				nameLabel.setBounds(210,600,300,100);
-				scoreLabel.setBounds(210, 700, 300, 100); //setBounds(x,y,����,����) ������ġ
+				scoreLabel.setBounds(210, 700, 300, 100); //setBounds(x,y,가로,세로) 절대위치
 				levelLabel.setBounds(210, 800, 300, 100);
 				highName.setBounds(110, 500, 500, 100);
 
@@ -512,19 +512,19 @@ public class Shooting extends JFrame{
 				
 				t.stop();
 				
-				//���� ���� ����
+				//파일 쓰기 실행
 				try {
 					RecordWrite();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 				
-				//finishScreen ȭ�� �׷��ֱ�
+				//finishScreen 화면 그려주기
 				g.drawImage(finishScreen, 0, 0, 720, 1000, null);
 
 			}
 
-			//15�� �̻� = level++
+			//15점 이상 = level++
 			if(score >= 0)
 				level = 1;
 			if(score >= 15)
@@ -532,18 +532,18 @@ public class Shooting extends JFrame{
 
 
 
-			//��ü ����
-			//��Ʈ �׸� �׸���
+			//객체 생성
+			//하트 그림 그리기
 			for(Heart h : listH) {
 				h.drawH(g);
 			}
 			
-			//����� �׸� �׸���
+			//비행기 그림 그리기
 			for(AirPlane ap1 : listAP) { 
 				ap1.draw(g);
 			}
 			
-			//���� �׸��׸���
+			//공격 그림그리기
 			
 			for(Attack a : listAT) {
 				if(a.getY()<0)
@@ -555,21 +555,21 @@ public class Shooting extends JFrame{
 				}
 			}
 
-			//���� 1 ����
+			//몬스터 1 공격
 			if(listAM1.isEmpty() != true)
 				for(MAttack1 ma : listAM1) {
 					ma.drawMA(g);
 					ma.moveA();
 				}
 			
-			//���� 2 ����
+			//몬스터 2 공격
 			if(listAM2.isEmpty() != true)
 				for(MAttack2 ma : listAM2) {
 					ma.drawMA(g);
 					ma.moveA();
 				}
 
-			//����Ⱑ ���� ���ݿ� �¾�����, ������--, ���� �����
+			//비행기가 몬스터 공격에 맞았을때, 생명력--, 몬스터 사라짐
 			for(AirPlane ap1 : listAP) {
 				for(MAttack1 ma: listAM1) {
 					if(ma.getY()>=ap1.getY() && ma.getX()>=ap1.getX() && ma.getX()<=ap1.getX()+50 && ma.getY() < ap1.getY() + 50) {
@@ -588,7 +588,7 @@ public class Shooting extends JFrame{
 				}
 
 
-				// ���Ͱ� ������� ������ �޾�����, hp--, hp=0 -> 3���� Ȯ�� ������ ����, �������� ������ 3����
+				// 몬스터가 비행기의 공격을 받았을때, hp--, hp=0 -> 3분의 확률 아이템 생성, 아이템의 종류는 3가지
 				for(Monster m : listM1) {
 					for(Attack a: listAT) {
 
@@ -602,16 +602,16 @@ public class Shooting extends JFrame{
 								boom();
 								
 								
-								//������ 3���� 1�� Ȯ���� ����
+								//아이템 3분의 1의 확률로 생성
 								int rand = (int)(Math.random()*3);
 								if(rand == 2) {
 									int rand2 = (int)(Math.random()*3);
 									if(rand2 == 0) 
-										listI.add(new ITEM(m.pX, m.pY,item[rand2],rand2)); //��Ʈ �߰�
+										listI.add(new ITEM(m.pX, m.pY,item[rand2],rand2)); //하트 추가
 									else if (rand2 == 1) 
-										listI.add(new ITEM(m.pX, m.pY, item[rand2],rand2)); //���� ����� �߰�
+										listI.add(new ITEM(m.pX, m.pY, item[rand2],rand2)); //서브 비행기 추가
 									else if(rand2 == 2)
-										listI.add(new ITEM(m.pX, m.pY, item[rand2], rand2)); //��Ʈ ����
+										listI.add(new ITEM(m.pX, m.pY, item[rand2], rand2)); //하트 삭제
 								}
 							}
 						}
@@ -699,25 +699,25 @@ public class Shooting extends JFrame{
 					}
 				}
 
-				//������ ����
+				//아이템 생성
 				for(ITEM item: listI) {
 					item.drawI(g);
 					item.moveI();
 					
-					//�Ÿ� ���
+					//거리 계산
 					if(ap1.distance(item.getXI(), item.getYI()) <= 40) {
 						IRemove.add(item);
-						if(item.typenum()==0) { //ù��° �������� ������ �߰��ϱ�
+						if(item.typenum()==0) { //첫번째 아이템인 생명력 추가하기
 							listH.add(new Heart(INDEX));
 							if(INDEX<5)
-								INDEX++; //������ �߰�
+								INDEX++; //생명력 추가
 
-						}else if(item.typenum() == 1 && listSP.isEmpty()) { // �ι�° �������� ��������� �߰��ϱ�
+						}else if(item.typenum() == 1 && listSP.isEmpty()) { // 두번째 아이템인 보조비행기 추가하기
 							listSP.add(new SubPlane(listAP.get(0).getX(), listAP.get(0).getY()));
 
-						}else if(item.typenum() == 2) { //����° �������� ������ �����ϱ�
+						}else if(item.typenum() == 2) { //세번째 아이템인 생명력 감소하기
 							HRemove.add(listH.get(INDEX-1));
-							INDEX--; //������ ����
+							INDEX--; //생명력 감소
 						}
 					}
 					
@@ -726,7 +726,7 @@ public class Shooting extends JFrame{
 				}
 			}
 
-			//������ ���Ͱ� �´����� ���� ����
+			//비행기와 몬스터가 맞닿으면 점수 감점
 			for(AirPlane AP : listAP) {
 				for(Monster m : listM1) {
 					m.drawM1(g);
@@ -772,17 +772,17 @@ public class Shooting extends JFrame{
 				}
 			}
 			
-			//���� ����� �߰�
+			//보조 비행기 추가
 			for(SubPlane sp : listSP) {
 				sp.draw(g);
 			}
 			
-			//score�� level ���ΰ�ħ
+			//score과 level 새로고침
 			scoreLabel.setText("SCORE: " + score);
 			levelLabel.setText("LEVEL: " +level);
 			
 			
-			//����
+			//제거
 			for(Attack a : ATRemove) 
 				listAT.remove(a);
 			for(MAttack1 a : MARemove1) 
@@ -815,12 +815,12 @@ public class Shooting extends JFrame{
 		@Override
 		public void keyTyped(KeyEvent e) {}
 		
-		//����⸦ ����Ű�� �̵�
+		//비행기를 방향키로 이동
 		@Override
 		public void keyPressed(KeyEvent e) {
 			int keycode = e.getKeyCode();
 			
-			//���� Ű���带 ���� ������ ����
+			//방향 키보드를 통해 움직임 조정
 			if(keycode == KeyEvent.VK_UP) {
 				moveUp = true;
 			}
@@ -837,11 +837,11 @@ public class Shooting extends JFrame{
 				checkSpace = true;
 			}
 			
-			//����Ű�� ���� ȭ�� �ٲ�
+			//엔터키를 통해 화면 바꿈
 			if(keycode == KeyEvent.VK_ENTER) {
 				CountE++;
 				
-				//���� ȭ�� -> ���� ȭ��
+				//시작 화면 -> 설명 화면
 				if(CountE == 1) { 
 					isMainScreen = false;
 					isExplainScreen = true;
@@ -850,7 +850,7 @@ public class Shooting extends JFrame{
 					t.start();
 				}
 				
-				//���� ȭ�� -> ���� ȭ�� 
+				//설명 화면 -> 게임 화면 
 				if(CountE == 2) { 
 					isMainScreen = false;
 					isExplainScreen = false;
@@ -861,25 +861,25 @@ public class Shooting extends JFrame{
 					panel.add(levelLabel);
 					panel.add(highName);
 					
-					if(listAP.isEmpty()) //����� ���� ��ġ =(������ ����, ������ 3���� 2 ��ġ)
+					if(listAP.isEmpty()) //비행기 생성 위치 =(가로의 중점, 세로의 3분의 2 위치)
 						listAP.add(new AirPlane(PANEL_WIDTH/2-PLANE_WIDTH/2, PANEL_HEIGHT/3*2-PLANE_HEIGHT/2));
 					
-					for(int i = 0; i< INDEX; i++ ) { //�⺻ ������ = 3��
+					for(int i = 0; i< INDEX; i++ ) { //기본 생명력 = 3개
 						listH.add(new Heart(i));
 
-						if(INDEX >= 6) { //�ִ� ������ 5��
+						if(INDEX >= 6) { //최대 생명력 5개
 							INDEX = 5;
 						}
 					}
 				}	
 			}
-			else if (keycode == KeyEvent.VK_ESCAPE) { //ESC Ű�� ���� ����
+			else if (keycode == KeyEvent.VK_ESCAPE) { //ESC 키를 통해 종료
 				System.exit(0);
 			}
 		}
 		
 		
-		//Ű���带 ������ ������ �� �۵� ����
+		//키보드를 눌렀다 떼었을 때 작동 중지
 		@Override
 		public void keyReleased(KeyEvent e) { 
 			int keycode = e.getKeyCode();
@@ -903,7 +903,7 @@ public class Shooting extends JFrame{
 		}
 	}
 	
-	//�����
+	//비행기
 	class AirPlane extends ImageIcon{
 		int x;
 		int y;
@@ -943,13 +943,13 @@ public class Shooting extends JFrame{
 			return y;
 		}
 
-		public double distance(int x, int y) { //�������� �Ÿ�
+		public double distance(int x, int y) { //중점과의 거리
 			return Math.sqrt(Math.pow((this.x+w/2)-x, 2)+ Math.pow((this.y+h/2)-y, 2));
 		}
 
 	}
 
-	//���� �����
+	//서브 비행기
 	class SubPlane extends ImageIcon{
 		int x;
 		int y;
@@ -963,7 +963,7 @@ public class Shooting extends JFrame{
 			h = 30;
 		}
 
-		public void draw(Graphics g) { //���� ����� ��ġ ����
+		public void draw(Graphics g) { //서브 비행기 위치 설정
 			g.drawImage(sub,listAP.get(0).getX()-35,listAP.get(0).getY()+10,w,h,null);
 			g.drawImage(sub,listAP.get(0).getX()+55,listAP.get(0).getY()+10,w,h,null);
 		}
@@ -977,7 +977,7 @@ public class Shooting extends JFrame{
 
 	}
 	
-	//����Ⱑ ����
+	//비행기가 공격
 	class Attack{
 		int pX;
 		int pY;
@@ -995,7 +995,7 @@ public class Shooting extends JFrame{
 			pY -= 10;
 		}
 
-		public void drawA1(Graphics g2) { //����Ⱑ �����Ҷ�
+		public void drawA1(Graphics g2) { //비행기가 공격할때
 			g2.setColor(Color.yellow);
 			g2.fillRect(pX,pY,width,height);
 		}
@@ -1010,7 +1010,7 @@ public class Shooting extends JFrame{
 
 	}
 
-	//���� 1�� �ϴ� ����
+	//몬스터 1이 하는 공격
 	class MAttack1{
 		int pX;
 		int pY;
@@ -1045,7 +1045,7 @@ public class Shooting extends JFrame{
 		}
 	}
 
-	//���� 3�� �ϴ� ����
+	//몬스터 3이 하는 공격
 	class MAttack2{
 		int pX;
 		int pY;
@@ -1081,8 +1081,8 @@ public class Shooting extends JFrame{
 
 	}
 	
-	//���� 1
-	class Monster{ //������ �Ʒ��� ������
+	//몬스터 1
+	class Monster{ //위에서 아래로 움직임
 		int pX;
 		int pY;
 		int width = 30;
@@ -1116,8 +1116,8 @@ public class Shooting extends JFrame{
 		}
 	}
 
-	//���� 2
-	class Monster2{ //�����ʿ��� ���� �밢�� ������
+	//몬스터 2
+	class Monster2{ //오른쪽에서 왼쪽 대각선 움직임
 		int pX;
 		int pY;
 		int width = 36;
@@ -1151,8 +1151,8 @@ public class Shooting extends JFrame{
 		}
 	}
 
-	//���� 3
-	class Monster3{ //���ʿ��� ���������� ������
+	//몬스터 3
+	class Monster3{ //왼쪽에서 오른쪽으로 움직임
 		int pX;
 		int pY;
 		int width = 45;
@@ -1185,8 +1185,8 @@ public class Shooting extends JFrame{
 		}
 	}
 
-	//���� 4
-	class Monster4{ //���ʿ��� ������ �밢�� ������
+	//몬스터 4
+	class Monster4{ //왼쪽에서 오른쪽 대각선 움직임
 		int pX;
 		int pY;
 		int width = 50;
@@ -1225,7 +1225,7 @@ public class Shooting extends JFrame{
 		}
 	}
 
-	//������ ����
+	//아이템 생성
 	class ITEM {
 		int px;
 		int py;
@@ -1262,7 +1262,7 @@ public class Shooting extends JFrame{
 		}
 	}
 	
-	//�������� ��Ÿ���� ��Ʈ
+	//생명력을 나타내는 하트
 	class Heart{
 		int index;
 
@@ -1275,7 +1275,7 @@ public class Shooting extends JFrame{
 		}
 	}
 	
-	//�÷��̾� �̸�
+	//플레이어 이름
 	class players{
 		String name;
 
@@ -1288,7 +1288,7 @@ public class Shooting extends JFrame{
 		}
 	}
 	
-	//�ְ� ������ ��
+	//최고 득점자 비교
 	class playerInfo{
 		String name;
 		int score;
