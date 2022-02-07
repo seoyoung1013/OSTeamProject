@@ -47,7 +47,7 @@ public class Item {
         this.image = image;
     }
 
-    //
+    
     public void draw(Graphics g){
         g.drawImage(image, this.x, this.y, this.width, this.height, null);
     }
