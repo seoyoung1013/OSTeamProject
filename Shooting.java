@@ -432,8 +432,8 @@ public class Shooting extends JFrame{
 				gY = AP.getY();
 				listAT.add(new A_Attack(gX, gY-20, 4, 15, 50, Color.yellow));
 				if(listSP.isEmpty() != true) {
-					listAT.add(new A_Attack(gX-13, gY-20, 4, 15, 20, Color.yellow));
-					listAT.add(new A_Attack(gX+63, gY-20, 4, 15, 20, Color.yellow));
+					listAT.add(new A_Attack(gX-13, gY-20, 4, 15, -10, Color.yellow));
+					listAT.add(new A_Attack(gX+63, gY-20, 4, 15, 10, Color.yellow));
 
 					//보조비행기가 하는 공격 list추가
 					if(count % 80 == 0) {
