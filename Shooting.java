@@ -90,10 +90,9 @@ public class Shooting extends JFrame{
 	static int FRAME_WIDTH = PANEL_WIDTH+16; //프레임 크기 오차 계산
 	static int FRAME_HEIGHT = PANEL_HEIGHT+39; //프레임 크기 오차 계산
 
-	ArrayList<AirPlane> listAP = new ArrayList<AirPlane>(); //비행기 객체 
+	ArrayList<AirPlane> listAP = new ArrayList<AirPlane>(); //비행기 객체
 	ArrayList<Attack> listAT = new ArrayList<Attack>(); //공격 객체
-	ArrayList<MAttack1> listAM1 = new ArrayList<MAttack1>(); //적이 공격하는 객체
-	ArrayList<MAttack2> listAM2 = new ArrayList<MAttack2>(); //적이 공격하는 객체
+	ArrayList<Attack> listAM = new ArrayList<Attack>(); //적이 공격하는 객체
 	ArrayList<Monster1> listM1 = new ArrayList<Monster1>();//적1 객체
 	ArrayList<Monster2> listM2 = new ArrayList<Monster2>();//적2 객체
 	ArrayList<Monster3> listM3 = new ArrayList<Monster3>(); //적3 객체
@@ -105,9 +104,8 @@ public class Shooting extends JFrame{
 	ArrayList<playerInfo> highScoreList = new ArrayList<>(); //최고 득점자 객체
 
 	//삭제 객체
-	ArrayList<Attack> ATRemove = new ArrayList<>(); 
-	ArrayList<MAttack1> MARemove1 = new ArrayList<>();
-	ArrayList<MAttack2> MARemove2 = new ArrayList<>();
+	ArrayList<Attack> ATRemove = new ArrayList<>();
+	ArrayList<Attack> MARemove = new ArrayList<>();
 	ArrayList<Monster1> MRemove1 = new ArrayList<>();
 	ArrayList<Monster2> MRemove2 = new ArrayList<>();
 	ArrayList<Monster3> MRemove3 = new ArrayList<>();
@@ -402,13 +400,13 @@ public class Shooting extends JFrame{
 				for(Monster1 M1 : listM1) {
 					x = M1.getX();
 					y = M1.getY();
-					listAM1.add(new MAttack1(x, y, Color.red));
+					listAM.add(new Attack(x+13, y+20, 4, 20, 15, Color.red));
 				}
 				if(level>1) {
 					for(Monster3 M3 : listM3) {
 						x = M3.getX();
 						y = M3.getY();
-						listAM2.add(new MAttack2(x, y, Color.blue));
+						listAM.add(new Attack(x+20, y+45, 4, 20, 15, Color.blue));
 					}
 				}
 			}
@@ -427,10 +425,10 @@ public class Shooting extends JFrame{
 			for(AirPlane AP : listAP) {
 				gX = AP.getX();
 				gY = AP.getY();
-				listAT.add(new Attack(gX+23,gY-20));
+				listAT.add(new Attack(gX+23,gY-20, 4, 20, 10, Color.yellow));
 				if(listSP.isEmpty() != true) {
-					listAT.add(new Attack(gX-13, gY-20));
-					listAT.add(new Attack(gX+63, gY-20));
+					listAT.add(new Attack(gX-13, gY-20,  4, 20, 10, Color.yellow));
+					listAT.add(new Attack(gX+63, gY-20,  4, 20, 10, Color.yellow));
 
 					//보조비행기가 하는 공격 list추가
 					if(count % 80 == 0) {
@@ -446,7 +444,6 @@ public class Shooting extends JFrame{
 		}
 	}
 
-
 	class DrawPanel extends JPanel implements KeyListener {
 		public void paintComponent(Graphics g) {
 
@@ -461,8 +458,7 @@ public class Shooting extends JFrame{
 				isFinishScreen = true;
 
 				for(Attack a : listAT) {ATRemove.add(a);}
-				for(MAttack1 a : listAM1) {MARemove1.add(a);}
-				for(MAttack2 a : listAM2) {MARemove2.add(a);}
+				for(Attack a : listAM) {MARemove.add(a);}
 				for(Monster1 a : listM1) {MRemove1.add(a);}
 				for(Monster2 a : listM2) {MRemove2.add(a);}
 				for(Monster3 a : listM3) {MRemove3.add(a);}
@@ -471,12 +467,10 @@ public class Shooting extends JFrame{
 				for(Item a : listI) {IRemove.add(a);}
 				for(AirPlane a : listAP) {APRemove.add(a);}
 
-				for(Attack a : ATRemove) 
+				for(Attack a : ATRemove)
 					listAT.remove(a);
-				for(MAttack1 a : MARemove1) 
-					listAM1.remove(a);
-				for(MAttack2 a : MARemove2) 
-					listAM2.remove(a);
+				for(Attack a : MARemove)
+					listAM.remove(a);
 				for(Monster1 a : MRemove1)
 					listM1.remove(a);
 				for(Monster2 a : MRemove2) 
@@ -532,8 +526,6 @@ public class Shooting extends JFrame{
 			if(score >= 15)
 				level = 2;
 
-
-
 			//객체 생성
 			//하트 그림 그리기
 			for(Heart h : listH) {
@@ -552,49 +544,36 @@ public class Shooting extends JFrame{
 					ATRemove.add(a);
 
 				if(listAT.isEmpty() != true) {
-					a.drawA1(g);
-					a.moveA();
+					a.drawMA(g);
+					a.setY( a.getY()-10);
+//					a.moveA();
 				}
 			}
 
-			//몬스터 1 공격
-			if(listAM1.isEmpty() != true)
-				for(MAttack1 ma : listAM1) {
-					ma.drawMA(g);
-					ma.moveA();
-				}
-
-			//몬스터 2 공격
-			if(listAM2.isEmpty() != true)
-				for(MAttack2 ma : listAM2) {
+			//몬스터들 공격
+			if(listAM.isEmpty() != true)
+				for(Attack ma : listAM) {
 					ma.drawMA(g);
 					ma.moveA();
 				}
 
 			//비행기가 몬스터 공격에 맞았을때, 생명력--, 몬스터 사라짐
 			for(AirPlane ap1 : listAP) {
-				for(MAttack1 ma: listAM1) {
+				for(Attack ma: listAM) {
 					if(ma.getY()>=ap1.getY() && ma.getX()>=ap1.getX() && ma.getX()<=ap1.getX()+50 && ma.getY() < ap1.getY() + 50) {
-						MARemove1.add(ma);
+						MARemove.add(ma);
 						HRemove.add(listH.get(INDEX-1));
 						INDEX--;
 					}
 				}
 
-				for(MAttack2 ma: listAM2) {
-					if(ma.getY()>=ap1.getY() && ma.getX() >= ap1.getX() && ma.getX() <= ap1.getX()+50 && ma.getY() < ap1.getY() + 50) {
-						MARemove2.add(ma);
-						HRemove.add(listH.get(INDEX-1));
-						INDEX--;
-					}
-				}
 
 
 				// 몬스터가 비행기의 공격을 받았을때, hp--, hp=0 -> 3분의 확률 아이템 생성, 아이템의 종류는 3가지
 				for(Monster1 m : listM1) {
 					for(Attack a: listAT) {
 
-						if(m.distance(a.pX+2,a.pY)<15.5) {
+						if(m.distance(a.getX()+2,a.getY())<15.5) {
 							ATRemove.add(a);
 							m.reduceHp();
 
@@ -607,12 +586,7 @@ public class Shooting extends JFrame{
 								int rand = (int)(Math.random()*3);
 								if(rand == 2) {
 									int rand2 = (int)(Math.random()*3);
-									if(rand2 == 0) 
-										listI.add(new Item(m.getX(), m.getY(), rand2, itemList[rand2])); //하트 추가
-									else if (rand2 == 1)
-										listI.add(new Item(m.getX(), m.getY(), rand2, itemList[rand2])); //서브 비행기 추가
-									else if(rand2 == 2)
-										listI.add(new Item(m.getX(), m.getY(), rand2, itemList[rand2])); //하트 삭제
+									listI.add(new Item(m.getX(), m.getY(), rand2, itemList[rand2])); //하트 추가
 								}
 							}
 						}
@@ -622,7 +596,7 @@ public class Shooting extends JFrame{
 				for(Monster2 m2 : listM2) { 
 					for(Attack a: listAT) {
 
-						if(m2.distance(a.pX+2,a.pY)<18.5) {
+						if(m2.distance(a.getX()+2,a.getY())<18.5) {
 							ATRemove.add(a);
 							m2.reduceHp();
 
@@ -634,13 +608,7 @@ public class Shooting extends JFrame{
 								int rand = (int)(Math.random()*3); //0~4
 								if(rand == 2) {
 									int rand2 = (int)(Math.random()*3);
-									if(rand2 == 0) 
-										listI.add(new Item(m2.getX(), m2.getY(), rand2, itemList[rand2]));
-									else if (rand2 == 1)
-										listI.add(new Item(m2.getX(), m2.getY(), rand2, itemList[rand2]));
-
-									else if(rand2 == 2)
-										listI.add(new Item(m2.getX(), m2.getY(), rand2, itemList[rand2]));
+									listI.add(new Item(m2.getX(), m2.getY(), rand2, itemList[rand2]));
 								}
 							}
 						}
@@ -649,7 +617,7 @@ public class Shooting extends JFrame{
 
 				for(Monster3 m3 : listM3) {
 					for(Attack a: listAT) {
-						if(m3.distance(a.pX+2,a.pY)<23) {
+						if(m3.distance(a.getX()+2,a.getY())<23) {
 							ATRemove.add(a);
 							m3.reduceHp();
 
@@ -661,14 +629,8 @@ public class Shooting extends JFrame{
 								int rand = (int)(Math.random()*3); //0~4
 								if(rand == 2) {
 									int rand2 = (int)(Math.random()*3);
-									if(rand2 == 0) 
-										listI.add(new Item(m3.getX(), m3.getY(), rand2, itemList[rand2]));
-									else if (rand2 == 1)
-										listI.add(new Item(m3.getX(), m3.getY(), rand2, itemList[rand2]));
-									else if(rand2 == 2)
-										listI.add(new Item(m3.getX(), m3.getY(), rand2, itemList[rand2]));
+									listI.add(new Item(m3.getX(), m3.getY(), rand2, itemList[rand2]));
 								}
-
 							}
 						}
 					}
@@ -676,7 +638,7 @@ public class Shooting extends JFrame{
 
 				for(Monster4 m4 : listM4) {
 					for(Attack a: listAT) {
-						if(m4.distance(a.pX+2,a.pY)<25.5) {
+						if(m4.distance(a.getX()+2,a.getY())<25.5) {
 							ATRemove.add(a);
 							m4.reduceHp();
 
@@ -688,12 +650,7 @@ public class Shooting extends JFrame{
 								int rand = (int)(Math.random()*3); //0~4
 								if(rand == 2) {
 									int rand2 = (int)(Math.random()*3);
-									if(rand2 == 0) 
-										listI.add(new Item(m4.getX(), m4.getY(), rand2, itemList[rand2]));
-									else if (rand2 == 1)
-										listI.add(new Item(m4.getX(), m4.getY(), rand2, itemList[rand2]));
-									else if(rand2 == 2)
-										listI.add(new Item(m4.getX(), m4.getY(), rand2, itemList[rand2]));
+									listI.add(new Item(m4.getX(), m4.getY(), rand2, itemList[rand2]));
 								}
 							}
 						}
@@ -782,14 +739,11 @@ public class Shooting extends JFrame{
 			scoreLabel.setText("SCORE: " + score);
 			levelLabel.setText("LEVEL: " +level);
 
-
 			//제거
-			for(Attack a : ATRemove) 
+			for(Attack a : ATRemove)
 				listAT.remove(a);
-			for(MAttack1 a : MARemove1) 
-				listAM1.remove(a);
-			for(MAttack2 a : MARemove2) 
-				listAM2.remove(a);
+			for(Attack a : MARemove)
+				listAM.remove(a);
 			for(Monster1 a : MRemove1)
 				listM1.remove(a);
 			for(Monster2 a : MRemove2) 
@@ -810,8 +764,6 @@ public class Shooting extends JFrame{
 			setFocusable(true);
 			requestFocus();
 		}
-
-
 
 		@Override
 		public void keyTyped(KeyEvent e) {}
@@ -878,7 +830,6 @@ public class Shooting extends JFrame{
 				System.exit(0);
 			}
 		}
-
 
 		//키보드를 눌렀다 떼었을 때 작동 중지
 		@Override
@@ -978,105 +929,15 @@ public class Shooting extends JFrame{
 
 	}
 
-	//비행기가 공격
-	class Attack{
-		int pX;
-		int pY;
-		int width;
-		int height;
-
-		Attack(int x, int y){
-			pX = x;
-			pY = y;
-			width = 4;
-			height = 20;
-		}
-
-		public void moveA() {
-			pY -= 10;
-		}
-
-		public void drawA1(Graphics g2) { //비행기가 공격할때
-			g2.setColor(Color.yellow);
-			g2.fillRect(pX,pY,width,height);
-		}
-
-		public int getY() {
-			return pY;
-		}
-
-		public int getX() {
-			return pX;
-		}
-
-	}
-
+	//비행기 공격
+//	 int wid = 4, hei = 20, speed= 10;
+//	 super(x+23, y-20, 4, 20, 10, Color.yellow);
 	//몬스터 1이 하는 공격
-	class MAttack1{
-		int pX;
-		int pY;
-		int wid = 4;
-		int hei = 20;
-		Color color;
-
-		MAttack1(int x, int y, Color color){
-			pX = x+13;
-			pY = y+20;
-
-			this.color = color;
-		}
-
-		public void moveA() {
-			pY += 15;
-		}
-
-		public void drawMA(Graphics g) {
-			g.setColor(color);
-			g.fillRect(pX, pY, wid, hei);
-		}
-
-		public int getY() {
-			return pY;
-		}
-
-		public int getX() {
-			return pX;
-		}
-	}
-
+//	 int wid = 4, hei = 20, speed= 15;
+//	 super(x+13, y+20, 4, 20, 15, Color.red);
 	//몬스터 3이 하는 공격
-	class MAttack2{
-		int pX;
-		int pY;
-		int wid = 4;
-		int hei = 20;
-		Color color;
-
-		MAttack2(int x, int y, Color color){
-			pX = x+20;
-			pY = y+45;
-
-			this.color = color;
-		}
-
-		public void moveA() {
-			pY += 15;
-		}
-
-		public void drawMA(Graphics g) {
-			g.setColor(color);
-			g.fillRect(pX, pY, wid, hei);
-		}
-
-		public int getY() {
-			return pY;
-		}
-
-		public int getX() {
-			return pX;
-		}
-
-	}
+//	 int wid = 4, hei = 20, speed = 15;
+//	 super(x+20, y+45, 4, 20, 15, Color.red);
 
 	//생명력을 나타내는 하트
 	class Heart{
@@ -1131,5 +992,4 @@ public class Shooting extends JFrame{
 			return score;
 		}
 	}
-
 }
