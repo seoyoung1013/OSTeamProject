@@ -39,7 +39,7 @@ public abstract class Monster {
         this.image = image;
     }
 
-    // 몬스터들이 구현해야하는 메소드
+    // 몬스터들이 구현해야할 메소드
     abstract public void move();
     abstract public void draw(Graphics g);
 
