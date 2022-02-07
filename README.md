@@ -1,5 +1,5 @@
 # OSTeamProject
-*Monster 추상클래스 변경, Monster 구현체 구현
+* Monster 추상클래스 변경, Monster 구현체 구현
 
 * 플레이어 공격과 몬스터 간의 간격 수정
 
