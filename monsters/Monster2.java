@@ -1,4 +1,4 @@
-package monster;
+package monsters;
 
 import java.awt.*;
 
@@ -7,7 +7,7 @@ public class Monster2 extends Monster{
     // int pX, pY;
     // int width = 36, height = 36, HP2 = 5;
     public Monster2(int x, int y, Image image){
-        super(x, y, 5, 36, 36, image);
+        super(x, y, 5, 2, 36, 36, image);
     }
 
     @Override

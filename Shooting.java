@@ -1,5 +1,5 @@
-
-import monster.Monster;
+import Items.Item;
+import monsters.*;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -25,11 +25,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
-
-import monster.Monster1;
-import monster.Monster2;
-import monster.Monster3;
-import monster.Monster4;
 
 @SuppressWarnings("serial")
 public class Shooting extends JFrame{
@@ -72,7 +67,7 @@ public class Shooting extends JFrame{
 	Image enemy4 = new ImageIcon(getClass().getClassLoader().getResource("res/enemy4.gif")).getImage(); //몬스터 4
 	Image heart1 = new ImageIcon(getClass().getClassLoader().getResource("res/HEART.png")).getImage(); //하트
 	Image sub = new ImageIcon(getClass().getClassLoader().getResource("res/sub.png")).getImage(); //서브 비행기
-	Image[] itemList = {
+	Image[] itemImageList = {
 			new ImageIcon(getClass().getClassLoader().getResource("res/HEART1.png")).getImage(), //아이템 하트 추가
 			new ImageIcon(getClass().getClassLoader().getResource("res/SUB1.png")).getImage(), //아이템 서브 비행기
 			new ImageIcon(getClass().getClassLoader().getResource("res/HEART2.png")).getImage()};  //아이템 하트 삭제
@@ -93,12 +88,11 @@ public class Shooting extends JFrame{
 
 	ArrayList<AirPlane> listAP = new ArrayList<AirPlane>(); //비행기 객체 
 	ArrayList<Attack> listAT = new ArrayList<Attack>(); //공격 객체
-	ArrayList<MAttack1> listAM1 = new ArrayList<MAttack1>(); //적이 공격하는 객체
-	ArrayList<MAttack2> listAM2 = new ArrayList<MAttack2>(); //적이 공격하는 객체
-	ArrayList<Monster1> listM1 = new ArrayList<Monster1>();//적1 객체
-	ArrayList<Monster2> listM2 = new ArrayList<Monster2>();//적2 객체
-	ArrayList<Monster3> listM3 = new ArrayList<Monster3>(); //적3 객체
-	ArrayList<Monster4> listM4 = new ArrayList<Monster4>();  //적4 객체
+	ArrayList<MAttack1> listAM1 = new ArrayList<MAttack1>(); 	//적이 공격하는 객체
+	ArrayList<MAttack2> listAM2 = new ArrayList<MAttack2>(); 	//적이 공격하는 객체
+	ArrayList<Monster> monsterList = new ArrayList<>();			// 적 객체들
+	ArrayList<Item> itemList = new ArrayList<>();				// 아이템 객체들
+
 	ArrayList<Item> listI = new ArrayList<Item>(); //아이템 객체
 	ArrayList<Heart> listH = new ArrayList<Heart>(); // 하트 객체
 	ArrayList<players> listN = new ArrayList<players>();//플레이어 이름 객체
@@ -109,10 +103,7 @@ public class Shooting extends JFrame{
 	ArrayList<Attack> ATRemove = new ArrayList<>(); 
 	ArrayList<MAttack1> MARemove1 = new ArrayList<>();
 	ArrayList<MAttack2> MARemove2 = new ArrayList<>();
-	ArrayList<Monster1> MRemove1 = new ArrayList<>();
-	ArrayList<Monster2> MRemove2 = new ArrayList<>();
-	ArrayList<Monster3> MRemove3 = new ArrayList<>();
-	ArrayList<Monster4> MRemove4 = new ArrayList<>();
+	ArrayList<Monster> MRemove = new ArrayList<>();
 	ArrayList<Item> IRemove = new ArrayList<>();
 	ArrayList<SubPlane> SPRemove = new ArrayList<>();
 	ArrayList<Heart> HRemove = new ArrayList<>();
@@ -377,39 +368,38 @@ public class Shooting extends JFrame{
 			//몬스터 list 추가
 			if(count % 100 == 0) {
 				x = (int)(Math.random()*690);
-				listM1.add(new Monster1(x,0, enemy1));
+				monsterList.add(new Monster1(x,0, enemy1));
 			}
-
-			if(count % 200 == 0) {
+			else if(count % 200 == 0) {
 				x = (int)(Math.random()*684);
 				y = (int)(Math.random()*500);
-				listM2.add(new Monster2(x,y, enemy2));
+				monsterList.add(new Monster2(x,y, enemy2));
 			}
-
-			if(count % 250 == 0) {
+			else if(count % 250 == 0 && level>1) {
 				x = (int)(Math.random()*360);
 				y = (int)(Math.random()*500);
-				listM3.add(new Monster3(x,y, enemy3));
+				monsterList.add(new Monster3(x,y, enemy3));
 			}
-
-			if(count % 300 == 0) {
+			else if(count % 300 == 0 && level>1) {
 				x = (int)(Math.random()*620);
 				y = (int)(Math.random()*500);
-				listM4.add(new Monster4(x,y,enemy4));
+				monsterList.add(new Monster4(x,y, enemy4));
 			}
 
 			//몬스터가 하는 공격 list추가
 			if(count % 200 == 0) {
-				for(Monster1 M1 : listM1) {
+				for(Monster M1 : monsterList) {
 					x = M1.getX();
 					y = M1.getY();
 					listAM1.add(new MAttack1(x, y, Color.red));
 				}
 				if(level>1) {
-					for(Monster3 M3 : listM3) {
-						x = M3.getX();
-						y = M3.getY();
-						listAM2.add(new MAttack2(x, y, Color.blue));
+					for(Monster M3 : monsterList) {
+						if(M3.getType() == 3){
+							x = M3.getX();
+							y = M3.getY();
+							listAM2.add(new MAttack2(x, y, Color.blue));
+						}
 					}
 				}
 			}
@@ -464,12 +454,11 @@ public class Shooting extends JFrame{
 				for(Attack a : listAT) {ATRemove.add(a);}
 				for(MAttack1 a : listAM1) {MARemove1.add(a);}
 				for(MAttack2 a : listAM2) {MARemove2.add(a);}
-				for(Monster1 a : listM1) {MRemove1.add(a);}
-				for(Monster2 a : listM2) {MRemove2.add(a);}
-				for(Monster3 a : listM3) {MRemove3.add(a);}
-				for(Monster4 a : listM4) {MRemove4.add(a);}
+
+				for(Monster a : monsterList) { MRemove.add(a); }
+				for(Item item: itemList) { IRemove.add(item); }
 				for(Heart a : listH) {HRemove.add(a);}
-				for(Item a : listI) {IRemove.add(a);}
+//				for(Item a : listI) {IRemove.add(a);}
 				for(AirPlane a : listAP) {APRemove.add(a);}
 				
 				for(Attack a : ATRemove) 
@@ -478,16 +467,13 @@ public class Shooting extends JFrame{
 					listAM1.remove(a);
 				for(MAttack2 a : MARemove2) 
 					listAM2.remove(a);
-				for(Monster1 a : MRemove1)
-					listM1.remove(a);
-				for(Monster2 a : MRemove2) 
-					listM2.remove(a);
-				for(Monster3 a : MRemove3)
-					listM3.remove(a);
-				for(Monster4 a : MRemove4) 
-					listM4.remove(a);
-				for(Item a : IRemove)
-					listI.remove(a);
+				for(Monster a : monsterList)
+					monsterList.remove(a);
+
+				for(Item item: IRemove)
+					itemList.remove(item);
+//				for(Item a : IRemove)
+//					listI.remove(a);
 				for(SubPlane a : SPRemove) 
 					listSP.remove(a);
 				for(Heart a : HRemove) 
@@ -528,11 +514,10 @@ public class Shooting extends JFrame{
 			}
 
 			//15점 이상 = level++
-			if(score >= 0)
+			if(score >= 0 && score < 15)
 				level = 1;
-			if(score >= 15)
+			else if(score >= 15)
 				level = 2;
-
 
 
 			//객체 생성
@@ -547,7 +532,6 @@ public class Shooting extends JFrame{
 			}
 			
 			//공격 그림그리기
-			
 			for(Attack a : listAT) {
 				if(a.getY()<0)
 					ATRemove.add(a);
@@ -590,119 +574,45 @@ public class Shooting extends JFrame{
 					}
 				}
 
-
 				// 몬스터가 비행기의 공격을 받았을때, hp--, hp=0 -> 3분의 확률 아이템 생성, 아이템의 종류는 3가지
-				for(Monster1 m : listM1) {
+				for(Monster m : monsterList) {
 					for(Attack a: listAT) {
 
-						if(m.distance(a.pX+2,a.pY)<30) {
+						double distance = m.distance(a.pX+2,a.pY);
+						if(m.getType()==1 && distance<30) {
 							ATRemove.add(a);
 							m.reduceHp();
-
-							if(m.getHp()<=0) {
-								score++;
-								MRemove1.add(m);
-								boom();
-
-								//아이템 3분의 1의 확률로 생성
-								int rand = (int)(Math.random()*3);
-								if(rand == 2) {
-									int rand2 = (int)(Math.random()*3);
-									if(rand2 == 0) 
-										listI.add(new Item(m.getX(), m.getY(), rand2, itemList[rand2])); //하트 추가
-									else if (rand2 == 1)
-										listI.add(new Item(m.getX(), m.getY(), rand2, itemList[rand2])); //서브 비행기 추가
-									else if(rand2 == 2)
-										listI.add(new Item(m.getX(), m.getY(), rand2, itemList[rand2])); //하트 삭제
-								}
-							}
 						}
-					}
-				}
-
-				for(Monster2 m2 : listM2) { 
-					for(Attack a: listAT) {
-
-						if(m2.distance(a.pX+2,a.pY)<36) {
+						else if(m.getType()==2 && distance<36){
 							ATRemove.add(a);
-							m2.reduceHp();
-
-							if(m2.getHp()<=0) {
-								score++;
-								MRemove2.add(m2);
-								boom();
-
-								int rand = (int)(Math.random()*3); //0~4
-								if(rand == 2) {
-									int rand2 = (int)(Math.random()*3);
-									if(rand2 == 0) 
-										listI.add(new Item(m2.getX(), m2.getY(), rand2, itemList[rand2]));
-									else if (rand2 == 1)
-										listI.add(new Item(m2.getX(), m2.getY(), rand2, itemList[rand2]));
-
-									else if(rand2 == 2)
-										listI.add(new Item(m2.getX(), m2.getY(), rand2, itemList[rand2]));
-								}
-							}
+							m.reduceHp();
 						}
-					}
-				}
-
-				for(Monster3 m3 : listM3) {
-					for(Attack a: listAT) {
-						if(m3.distance(a.pX+2,a.pY)<45) {
+						else if( (m.getType()==3 || m.getType()==4) && distance<45 ){
 							ATRemove.add(a);
-							m3.reduceHp();
-
-							if(m3.getHp()<=0) {
-								score++;
-								MRemove3.add(m3);
-								boom();
-
-								int rand = (int)(Math.random()*3); //0~4
-								if(rand == 2) {
-									int rand2 = (int)(Math.random()*3);
-									if(rand2 == 0) 
-										listI.add(new Item(m3.getX(), m3.getY(), rand2, itemList[rand2]));
-									else if (rand2 == 1)
-										listI.add(new Item(m3.getX(), m3.getY(), rand2, itemList[rand2]));
-									else if(rand2 == 2)
-										listI.add(new Item(m3.getX(), m3.getY(), rand2, itemList[rand2]));
-								}
-
-							}
+							m.reduceHp();
 						}
-					}
-				}
 
-				for(Monster4 m4 : listM4) {
-					for(Attack a: listAT) {
-						if(m4.distance(a.pX+2,a.pY)<45) {
-							ATRemove.add(a);
-							m4.reduceHp();
+						// 아이템 생성 로직
+						if(m.getHp()<=0) {
+							score++;
+							MRemove.add(m);
+							boom();
 
-							if(m4.getHp()<=0) {
-								score++;
-								boom();
-								MRemove4.add(m4);
-
-								int rand = (int)(Math.random()*3); //0~4
-								if(rand == 2) {
-									int rand2 = (int)(Math.random()*3);
-									if(rand2 == 0) 
-										listI.add(new Item(m4.getX(), m4.getY(), rand2, itemList[rand2]));
-									else if (rand2 == 1)
-										listI.add(new Item(m4.getX(), m4.getY(), rand2, itemList[rand2]));
-									else if(rand2 == 2)
-										listI.add(new Item(m4.getX(), m4.getY(), rand2, itemList[rand2]));
-								}
+							//아이템 3분의 1의 확률로 생성
+							int rand = (int)(Math.random()*3);
+							if(rand == 2) {
+								// 3개의 아이템 랜덤 생성
+								int createdItem = (int)(Math.random()*3);
+//								listI.add(new Item(m.getX(), m.getY(), createdItem, itemImageList[createdItem]));
+								itemList.add(new Item(m.getX(), m.getY(), createdItem, itemImageList[createdItem]));
 							}
 						}
 					}
 				}
 
 				//아이템 생성
-				for(Item item: listI) {
+				for(Item item: itemList) {
+					// 0 - 생명력 추가, 1 - 보조비행기, 2 - 생명력 감소
 					item.draw(g);
 					item.move();
 					
@@ -730,50 +640,29 @@ public class Shooting extends JFrame{
 
 			//비행기와 몬스터가 맞닿으면 점수 감점
 			for(AirPlane AP : listAP) {
-				for(Monster1 m : listM1) {
+				for(Monster m : monsterList) {
 					m.draw(g);
 					m.move();
-					if(AP.distance(m.getX(),m.getY())<=50) {
-						MRemove1.add(m);
+					double distance = AP.distance(m.getX(),m.getY());
+					if(m.getType()== 1 && distance<=50) {
+						MRemove.add(m);
 						score--;
 					}
-				}
-
-				for(Monster2 m2 : listM2) {
-					m2.draw(g);
-					m2.move();
-
-					if(AP.distance(m2.getX(),m2.getY())<=43) {
-						MRemove2.add(m2);
+					else if(m.getType()==2 && distance<=43){
+						MRemove.add(m);
 						score--;
 					}
-				}
-
-				for(Monster3 m3 : listM3) {
-					if(level > 1) {
-						m3.draw(g);
-						m3.move();
-
-						if(AP.distance(m3.getX(),m3.getY())<=47) {
-							MRemove3.add(m3);
-							score--;
-						}
+					else if(level>1 && m.getType()==3 && distance<=47){
+						MRemove.add(m);
+						score--;
 					}
-				}
-
-				for(Monster4 m4 : listM4) {
-					if(level>1) {
-						m4.draw(g);
-						m4.move();
-
-						if(AP.distance(m4.getX(),m4.getY())<=50) {
-							MRemove4.add(m4);
-							score--;
-						}
+					else if(level>1 && m.getType()==4 && distance<=50){
+						MRemove.add(m);
+						score--;
 					}
 				}
 			}
-			
+
 			//보조 비행기 추가
 			for(SubPlane sp : listSP) {
 				sp.draw(g);
@@ -791,14 +680,10 @@ public class Shooting extends JFrame{
 				listAM1.remove(a);
 			for(MAttack2 a : MARemove2) 
 				listAM2.remove(a);
-			for(Monster1 a : MRemove1)
-				listM1.remove(a);
-			for(Monster2 a : MRemove2) 
-				listM2.remove(a);
-			for(Monster3 a : MRemove3)
-				listM3.remove(a);
-			for(Monster4 a : MRemove4) 
-				listM4.remove(a);
+
+			for(Monster a : MRemove)
+				monsterList.remove(a);
+
 			for(Item a : IRemove)
 				listI.remove(a);
 			for(SubPlane a : SPRemove) 
@@ -1136,6 +1021,4 @@ public class Shooting extends JFrame{
 			return score;
 		}
 	}
-
 }
-

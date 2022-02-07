@@ -1,3 +1,5 @@
+package Items;
+
 import java.awt.*;
 
 public class Item {
@@ -31,7 +33,6 @@ public class Item {
     public int getYI() {
         return this.y+10;
     }
-
 
     // setter
     public void setX(int x) {

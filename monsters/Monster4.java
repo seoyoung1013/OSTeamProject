@@ -1,4 +1,4 @@
-package monster;
+package monsters;
 
 import java.awt.*;
 
@@ -7,7 +7,7 @@ public class Monster4 extends Monster{
     //		int width = 50,  height = 50, HP4 = 10;
 
     public Monster4(int x, int y, Image image){
-        super(x, y, 10, 50, 50, image);
+        super(x, y, 10, 4, 50, 50, image);
     }
 
     public void drawAM(Graphics g2) {
