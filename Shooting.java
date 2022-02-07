@@ -1,4 +1,3 @@
-
 import monster.Monster;
 
 import java.awt.Color;
@@ -54,9 +53,9 @@ public class Shooting extends JFrame{
 	int level = 1; //레벨 카운트
 
 	int count = 0; //타이머 카운트
-	
+
 	playerInfo highestPlayer; //최고득점자
-	
+
 	static File path = new File("."); //절대경로
 	String root = path.getAbsolutePath(); //경로
 
@@ -104,7 +103,7 @@ public class Shooting extends JFrame{
 	ArrayList<players> listN = new ArrayList<players>();//플레이어 이름 객체
 	ArrayList<SubPlane> listSP = new ArrayList<SubPlane>(); //서브 비행기 객체
 	ArrayList<playerInfo> highScoreList = new ArrayList<>(); //최고 득점자 객체
-	
+
 	//삭제 객체
 	ArrayList<Attack> ATRemove = new ArrayList<>(); 
 	ArrayList<MAttack1> MARemove1 = new ArrayList<>();
@@ -117,7 +116,7 @@ public class Shooting extends JFrame{
 	ArrayList<SubPlane> SPRemove = new ArrayList<>();
 	ArrayList<Heart> HRemove = new ArrayList<>();
 	ArrayList<AirPlane>APRemove = new ArrayList<>();
-	
+
 	//키보드 움직임 자연스럽게 하기 위함
 	boolean moveUp = false;
 	boolean moveDown = false;
@@ -150,14 +149,14 @@ public class Shooting extends JFrame{
 			System.out.println("Sound Error bgm");
 		}
 	}
-	
+
 	// 파일 읽기
 	public void  FILERead() throws IOException { 
 		File file = new File("HIGHEST.txt");
 		Scanner s = null;
 		String fileName;
 		int fileScore;
-		
+
 		if(!file.exists())
 			file.createNewFile();
 		else {
@@ -166,7 +165,7 @@ public class Shooting extends JFrame{
 				while(s.hasNext()) {
 					fileName = s.next();
 					fileScore = s.nextInt();
-					
+
 					highScoreList.add(new playerInfo(fileName, fileScore));
 				}
 			} finally {
@@ -175,7 +174,7 @@ public class Shooting extends JFrame{
 			}
 		}
 	}
-	
+
 	//파일 쓰기
 	public void RecordWrite() throws IOException{
 		if(highScoreList.size() >= 3) {
@@ -184,7 +183,7 @@ public class Shooting extends JFrame{
 					highestPlayer = highScoreList.get(i);
 			}
 		}
-		
+
 		PrintWriter out = null;
 		try {
 			out = new PrintWriter(path + "/HIGHEST.txt");
@@ -202,7 +201,7 @@ public class Shooting extends JFrame{
 
 	// 생성자 - Frame 기본설정, 패널 추가
 	Shooting() {			
-		
+
 		//파일 불러오기
 		try {
 			FILERead();
@@ -210,7 +209,7 @@ public class Shooting extends JFrame{
 			e.printStackTrace();
 			System.out.println("READ ERROR");
 		}
-		
+
 		//파일 비교
 		if(!highScoreList.isEmpty()) {
 			highestPlayer = highScoreList.get(0);
@@ -221,7 +220,7 @@ public class Shooting extends JFrame{
 				}
 			}
 		}
-		
+
 		//이름 저장
 		nameInput();
 
@@ -243,7 +242,7 @@ public class Shooting extends JFrame{
 			highName.setBounds(500, 920, 200, 30);
 			highName.setHorizontalAlignment(JLabel.CENTER);
 			highName.setForeground(Color.white);
-			
+
 		}else { //최고득점자가 없을 때 
 			highName = new JLabel("HIGHEST:"+" "+" NULL , NULL");
 			highName.setFont(new Font("FTLAB Hoony", Font.BOLD , 15));
@@ -251,19 +250,19 @@ public class Shooting extends JFrame{
 			highName.setHorizontalAlignment(JLabel.CENTER);
 			highName.setForeground(Color.white);
 		}
-		
+
 		//라벨 글씨체
 		nameLabel.setFont(new Font("FTLAB Hoony", Font.BOLD , 15));
 		scoreLabel.setFont(new Font("FTLAB Hoony", Font.BOLD , 15));
 		levelLabel.setFont(new Font("FTLAB Hoony", Font.BOLD , 15));
-		
+
 		panel.setLayout(null);
 
 		//위치 선정//setBounds(x,y,가로,세로) 절대위치
 		nameLabel.setBounds(370, 950, 100, 30);
 		scoreLabel.setBounds(490, 950, 100, 30); 
 		levelLabel.setBounds(610, 950, 100, 30);
-		
+
 
 		//가운데 정렬
 		nameLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -300,7 +299,7 @@ public class Shooting extends JFrame{
 	public void name() {
 		listN.add(new players(player_name));
 	}
-	
+
 	//화면 전환
 	public void screenDraw(Graphics g) { 
 		if(isMainScreen==true) {
@@ -386,20 +385,20 @@ public class Shooting extends JFrame{
 				listM2.add(new Monster2(x,y, enemy2));
 			}
 
-			if(count % 250 == 0) {
+			if(count % 250 == 0 && level > 1) {
 				x = (int)(Math.random()*360);
 				y = (int)(Math.random()*500);
 				listM3.add(new Monster3(x,y, enemy3));
 			}
 
-			if(count % 300 == 0) {
+			if(count % 300 == 0 && level > 1) {
 				x = (int)(Math.random()*620);
 				y = (int)(Math.random()*500);
 				listM4.add(new Monster4(x,y,enemy4));
 			}
 
 			//몬스터가 하는 공격 list추가
-			if(count % 200 == 0) {
+			if(count % 200 == 0 && CountE > 1) {
 				for(Monster1 M1 : listM1) {
 					x = M1.getX();
 					y = M1.getY();
@@ -460,7 +459,7 @@ public class Shooting extends JFrame{
 			if(INDEX == 0) {
 				isGameScreen = false;
 				isFinishScreen = true;
-							
+
 				for(Attack a : listAT) {ATRemove.add(a);}
 				for(MAttack1 a : listAM1) {MARemove1.add(a);}
 				for(MAttack2 a : listAM2) {MARemove2.add(a);}
@@ -471,7 +470,7 @@ public class Shooting extends JFrame{
 				for(Heart a : listH) {HRemove.add(a);}
 				for(Item a : listI) {IRemove.add(a);}
 				for(AirPlane a : listAP) {APRemove.add(a);}
-				
+
 				for(Attack a : ATRemove) 
 					listAT.remove(a);
 				for(MAttack1 a : MARemove1) 
@@ -499,7 +498,7 @@ public class Shooting extends JFrame{
 				scoreLabel.setFont(new Font("FTLAB Hoony", Font.BOLD , 30));
 				levelLabel.setFont(new Font("FTLAB Hoony", Font.BOLD , 30));
 				highName.setFont(new Font("FTLAB Hoony", Font.BOLD , 30));
-				
+
 				//위치 재정렬
 				nameLabel.setBounds(210,600,300,100);
 				scoreLabel.setBounds(210, 700, 300, 100); //setBounds(x,y,가로,세로) 절대위치
@@ -510,18 +509,18 @@ public class Shooting extends JFrame{
 				scoreLabel.setHorizontalAlignment(JLabel.CENTER);
 				levelLabel.setHorizontalAlignment(JLabel.CENTER);
 				highName.setHorizontalAlignment(JLabel.CENTER);
-				
+
 				highScoreList.add(new playerInfo(player_name, score));
-				
+
 				t.stop();
-				
+
 				//파일 쓰기 실행
 				try {
 					RecordWrite();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				
+
 				//finishScreen 화면 그려주기
 				g.drawImage(finishScreen, 0, 0, 720, 1000, null);
 
@@ -540,14 +539,14 @@ public class Shooting extends JFrame{
 			for(Heart h : listH) {
 				h.drawH(g);
 			}
-			
+
 			//비행기 그림 그리기
 			for(AirPlane ap1 : listAP) { 
 				ap1.draw(g);
 			}
-			
+
 			//공격 그림그리기
-			
+
 			for(Attack a : listAT) {
 				if(a.getY()<0)
 					ATRemove.add(a);
@@ -564,7 +563,7 @@ public class Shooting extends JFrame{
 					ma.drawMA(g);
 					ma.moveA();
 				}
-			
+
 			//몬스터 2 공격
 			if(listAM2.isEmpty() != true)
 				for(MAttack2 ma : listAM2) {
@@ -595,7 +594,7 @@ public class Shooting extends JFrame{
 				for(Monster1 m : listM1) {
 					for(Attack a: listAT) {
 
-						if(m.distance(a.pX+2,a.pY)<30) {
+						if(m.distance(a.pX+2,a.pY)<15.5) {
 							ATRemove.add(a);
 							m.reduceHp();
 
@@ -623,7 +622,7 @@ public class Shooting extends JFrame{
 				for(Monster2 m2 : listM2) { 
 					for(Attack a: listAT) {
 
-						if(m2.distance(a.pX+2,a.pY)<36) {
+						if(m2.distance(a.pX+2,a.pY)<18.5) {
 							ATRemove.add(a);
 							m2.reduceHp();
 
@@ -650,7 +649,7 @@ public class Shooting extends JFrame{
 
 				for(Monster3 m3 : listM3) {
 					for(Attack a: listAT) {
-						if(m3.distance(a.pX+2,a.pY)<45) {
+						if(m3.distance(a.pX+2,a.pY)<23) {
 							ATRemove.add(a);
 							m3.reduceHp();
 
@@ -677,7 +676,7 @@ public class Shooting extends JFrame{
 
 				for(Monster4 m4 : listM4) {
 					for(Attack a: listAT) {
-						if(m4.distance(a.pX+2,a.pY)<45) {
+						if(m4.distance(a.pX+2,a.pY)<25.5) {
 							ATRemove.add(a);
 							m4.reduceHp();
 
@@ -705,7 +704,7 @@ public class Shooting extends JFrame{
 				for(Item item: listI) {
 					item.draw(g);
 					item.move();
-					
+
 					//거리 계산
 					if(ap1.distance(item.getXI(), item.getYI()) <= 40) {
 						IRemove.add(item);
@@ -722,7 +721,7 @@ public class Shooting extends JFrame{
 							INDEX--; //생명력 감소
 						}
 					}
-					
+
 					if(item.getYI() >= 980)
 						IRemove.add(item);
 				}
@@ -733,7 +732,7 @@ public class Shooting extends JFrame{
 				for(Monster1 m : listM1) {
 					m.draw(g);
 					m.move();
-					if(AP.distance(m.getX(),m.getY())<=50) {
+					if(AP.distance(m.getX()+15,m.getY()+15)<=31) {
 						MRemove1.add(m);
 						score--;
 					}
@@ -743,7 +742,7 @@ public class Shooting extends JFrame{
 					m2.draw(g);
 					m2.move();
 
-					if(AP.distance(m2.getX(),m2.getY())<=43) {
+					if(AP.distance(m2.getX()+18,m2.getY()+18)<=44) {
 						MRemove2.add(m2);
 						score--;
 					}
@@ -754,7 +753,7 @@ public class Shooting extends JFrame{
 						m3.draw(g);
 						m3.move();
 
-						if(AP.distance(m3.getX(),m3.getY())<=47) {
+						if(AP.distance(m3.getX()+22,m3.getY()+22)<=48) {
 							MRemove3.add(m3);
 							score--;
 						}
@@ -766,24 +765,24 @@ public class Shooting extends JFrame{
 						m4.draw(g);
 						m4.move();
 
-						if(AP.distance(m4.getX(),m4.getY())<=50) {
+						if(AP.distance(m4.getX()+25,m4.getY()+25)<=51) {
 							MRemove4.add(m4);
 							score--;
 						}
 					}
 				}
 			}
-			
+
 			//보조 비행기 추가
 			for(SubPlane sp : listSP) {
 				sp.draw(g);
 			}
-			
+
 			//score과 level 새로고침
 			scoreLabel.setText("SCORE: " + score);
 			levelLabel.setText("LEVEL: " +level);
-			
-			
+
+
 			//제거
 			for(Attack a : ATRemove) 
 				listAT.remove(a);
@@ -816,12 +815,12 @@ public class Shooting extends JFrame{
 
 		@Override
 		public void keyTyped(KeyEvent e) {}
-		
+
 		//비행기를 방향키로 이동
 		@Override
 		public void keyPressed(KeyEvent e) {
 			int keycode = e.getKeyCode();
-			
+
 			//방향 키보드를 통해 움직임 조정
 			if(keycode == KeyEvent.VK_UP) {
 				moveUp = true;
@@ -838,11 +837,11 @@ public class Shooting extends JFrame{
 			if(keycode == KeyEvent.VK_SPACE) {
 				checkSpace = true;
 			}
-			
+
 			//엔터키를 통해 화면 바꿈
 			if(keycode == KeyEvent.VK_ENTER) {
 				CountE++;
-				
+
 				//시작 화면 -> 설명 화면
 				if(CountE == 1) { 
 					isMainScreen = false;
@@ -851,7 +850,7 @@ public class Shooting extends JFrame{
 					isFinishScreen = false;
 					t.start();
 				}
-				
+
 				//설명 화면 -> 게임 화면 
 				if(CountE == 2) { 
 					isMainScreen = false;
@@ -862,10 +861,10 @@ public class Shooting extends JFrame{
 					panel.add(scoreLabel);
 					panel.add(levelLabel);
 					panel.add(highName);
-					
+
 					if(listAP.isEmpty()) //비행기 생성 위치 =(가로의 중점, 세로의 3분의 2 위치)
 						listAP.add(new AirPlane(PANEL_WIDTH/2-PLANE_WIDTH/2, PANEL_HEIGHT/3*2-PLANE_HEIGHT/2));
-					
+
 					for(int i = 0; i< INDEX; i++ ) { //기본 생명력 = 3개
 						listH.add(new Heart(i));
 
@@ -879,8 +878,8 @@ public class Shooting extends JFrame{
 				System.exit(0);
 			}
 		}
-		
-		
+
+
 		//키보드를 눌렀다 떼었을 때 작동 중지
 		@Override
 		public void keyReleased(KeyEvent e) { 
@@ -904,7 +903,7 @@ public class Shooting extends JFrame{
 			}
 		}
 	}
-	
+
 	//비행기
 	class AirPlane extends ImageIcon{
 		int x;
@@ -946,7 +945,7 @@ public class Shooting extends JFrame{
 		}
 
 		public double distance(int x, int y) { //중점과의 거리
-			return Math.sqrt(Math.pow((this.x+w/2)-x, 2)+ Math.pow((this.y+h/2)-y, 2));
+			return Math.sqrt(Math.pow((this.x+w/2)-x, 2) + Math.pow((this.y+h/2)-y, 2));
 		}
 
 	}
@@ -978,7 +977,7 @@ public class Shooting extends JFrame{
 		}
 
 	}
-	
+
 	//비행기가 공격
 	class Attack{
 		int pX;
@@ -1016,21 +1015,19 @@ public class Shooting extends JFrame{
 	class MAttack1{
 		int pX;
 		int pY;
-		int wid = 2;
+		int wid = 4;
 		int hei = 20;
 		Color color;
 
 		MAttack1(int x, int y, Color color){
-			pX = x+14;
+			pX = x+13;
 			pY = y+20;
-			wid = 2;
-			hei = 20;
 
 			this.color = color;
 		}
 
 		public void moveA() {
-			pY += 20;
+			pY += 15;
 		}
 
 		public void drawMA(Graphics g) {
@@ -1051,21 +1048,19 @@ public class Shooting extends JFrame{
 	class MAttack2{
 		int pX;
 		int pY;
-		int wid = 2;
+		int wid = 4;
 		int hei = 20;
 		Color color;
 
 		MAttack2(int x, int y, Color color){
-			pX = x+21;
+			pX = x+20;
 			pY = y+45;
-			wid = 2;
-			hei = 20;
 
 			this.color = color;
 		}
 
 		public void moveA() {
-			pY += 20;
+			pY += 15;
 		}
 
 		public void drawMA(Graphics g) {
@@ -1095,7 +1090,7 @@ public class Shooting extends JFrame{
 			g.drawImage(heart1, 30+index*30, 950, 27, 21, null);
 		}
 	}
-	
+
 	//플레이어 이름
 	class players{
 		String name;
@@ -1108,24 +1103,24 @@ public class Shooting extends JFrame{
 			return this.name;
 		}
 	}
-	
+
 	//최고 득점자 비교
 	class playerInfo{
 		String name;
 		int score;
-		
+
 		playerInfo(String name, int score){
 			this.name = name;
 			this.score = score;
 		}
-		
+
 		public int compareTo(playerInfo playerInfo) {
 			if(playerInfo.score>this.score)
 				return 1;
 			else
 				return 0;
 		}
-		
+
 		public void printInfo() {
 			System.out.println("Name: " + name + ", SCORE: " + score);
 		}
@@ -1138,4 +1133,3 @@ public class Shooting extends JFrame{
 	}
 
 }
-
