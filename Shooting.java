@@ -621,7 +621,7 @@ public class Shooting extends JFrame{
 						}
 					}
 				}
-
+				
 				for(Monster2 m2 : listM2) { 
 					for(A_Attack a: listAT) {
 
@@ -980,7 +980,7 @@ public class Shooting extends JFrame{
 		}
 
 	}
-	
+	/*
 	//비행기가 공격
 	class Attack {
 		int pX;
@@ -1014,6 +1014,7 @@ public class Shooting extends JFrame{
 
 	}
 
+	
 	//몬스터 1이 하는 공격
 	class MAttack1{
 		int pX;
@@ -1080,7 +1081,8 @@ public class Shooting extends JFrame{
 		}
 
 	}
-
+	*/
+	
 	//생명력을 나타내는 하트
 	class Heart{
 		int index;
