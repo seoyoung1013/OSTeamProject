@@ -25,33 +25,22 @@ import attack.Attack2;
 @SuppressWarnings("serial")
 public class Shooting extends JFrame {
 
-
-
 	Timer t; //비행기 타이머
 	Timer at; //공격 타이머
-//
-
-
-
 
 	int count = 0; //타이머 카운트
 	//이미지파일
 	 //게임시작 전 화면
-
-
+	
 	Image enemy1 = new ImageIcon(getClass().getClassLoader().getResource("res/enemy1.gif")).getImage(); //몬스터 1
 	Image enemy2 = new ImageIcon(getClass().getClassLoader().getResource("res/enemy2.gif")).getImage(); //몬스터 2
 	Image enemy3 = new ImageIcon(getClass().getClassLoader().getResource("res/enemy3.gif")).getImage(); //몬스터 3
 	Image enemy4 = new ImageIcon(getClass().getClassLoader().getResource("res/enemy4.gif")).getImage(); //몬스터 4
 
-
-
 	DrawPanel dP;
 
 	static int FRAME_WIDTH = 720+ 16; //프레임 크기 오차 계산
 	static int FRAME_HEIGHT = 1000 + 39; //프레임 크기 오차 계산
-
-
 
 	// 생성자 - Frame 기본설정, 패널 추가
 	Shooting() {
@@ -59,11 +48,14 @@ public class Shooting extends JFrame {
 		//파일 불러오기
 		try {
 			dP.gF.FILERead();
+
+
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("READ ERROR");
 		}
 		//파일 비교
+
 		if (!dP.gF.highScoreList.isEmpty()) {
 			dP.gF.highestPlayer = dP.gF.highScoreList.get(0);
 			if (dP.gF.highScoreList.size() >= 2) {
@@ -75,6 +67,7 @@ public class Shooting extends JFrame {
 		}
 		//이름 저장
 		dP.gF.nameInput();
+
 		//타이머 생성
 		t = new Timer(10, new Draw());
 		at = new Timer(100, new MakeA());
@@ -117,11 +110,13 @@ public class Shooting extends JFrame {
 		dP.levelLabel.setForeground(Color.white);
 
 		this.add(dP);
+		
 		this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 		this.setVisible(true);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setTitle("SHOOTING");
 		this.setResizable(false);
+
 
 		dP.gF.init(); //boolean형을 통해 mainScreen그려주기
 		dP.gF.name(); //이름 저장
@@ -140,6 +135,7 @@ public class Shooting extends JFrame {
 			int y;
 			if(dP.t==false)
 				t.stop();
+      
 			// 비행기의 움직임
 			for (AirPlane ap : dP.listAP) {
 				//방향키로 움직임 제어
@@ -153,6 +149,7 @@ public class Shooting extends JFrame {
 					if (ap.x + dP.PLANE_WIDTH < dP.PANEL_WIDTH)
 						ap.moveRIGHT();
 				} else if (dP.moveLeft == true) {
+		
 					if (ap.x > 0)
 						ap.moveLEFT();
 				}
@@ -192,10 +189,12 @@ public class Shooting extends JFrame {
 			//몬스터가 하는 공격 list추가
 			if (count % 200 == 0 && dP.CountE > 1) {
 				for (Monster1 M1 : dP.listM1) {
+				
 					x = M1.getX();
 					y = M1.getY();
 					dP.listAM1.add(new Attack1(x, y, 4, 20, 30, Color.red));
 				}
+
 				if (dP.level > 1) {
 					for (Monster3 M3 : dP.listM3) {
 						x = M3.getX();
@@ -203,7 +202,7 @@ public class Shooting extends JFrame {
 						dP.listAM2.add(new Attack2(x, y, 4, 20, 45, Color.blue));
 					}
 				}
-			}
+			} 
 		}
 	}
 
@@ -235,14 +234,6 @@ public class Shooting extends JFrame {
 				}
 			}
 		}
-	}
-
-
-
-	//비행기
-
-	//서브 비행기
-
-
+  }
 }
 

@@ -1,5 +1,5 @@
 public class Players {
-
+  
     String name;
     Players(String player_name) {
         this.name = player_name;
@@ -9,4 +9,3 @@ public class Players {
         return this.name;
     }
 }
-
