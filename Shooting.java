@@ -1,4 +1,3 @@
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -7,28 +6,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Scanner;
-
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
-
 import monster.Monster1;
 import monster.Monster2;
 import monster.Monster3;
 import monster.Monster4;
-
 import attack.A_Attack;
 import attack.Attack1;
 import attack.Attack2;
@@ -38,8 +27,6 @@ public class Shooting extends JFrame{
 
 	JPanel startPanel;
 	DrawPanel panel;
-
-	static String player_name; //플레이어 이름 변수
 	JLabel nameLabel;
 	JLabel scoreLabel;
 	JLabel levelLabel;
@@ -48,25 +35,15 @@ public class Shooting extends JFrame{
 	Timer t; //비행기 타이머
 	Timer at; //공격 타이머
 
-
 	int INDEX = 3; //생명력 카운트
 	int CountE = 0; //엔터키 횟수 카운트
-
 	int score = 0; //점수 카운트
 	int level = 1; //레벨 카운트
-
 	int count = 0; //타이머 카운트
-	
-	playerInfo highestPlayer; //최고득점자
-	
-	static File path = new File("."); //절대경로
-	String root = path.getAbsolutePath(); //경로
 
 	//이미지파일
-	Image gameScreen = new ImageIcon(getClass().getClassLoader().getResource("res/gameScreen.png")).getImage(); //게임 화면
-	Image explainScreen = new ImageIcon(getClass().getClassLoader().getResource("res/explainScreen.png")).getImage(); //설명화면
-	Image mainScreen = new ImageIcon(getClass().getClassLoader().getResource("res/mainScreen.png")).getImage(); //게임시작 전 화면
-	Image finishScreen = new ImageIcon(getClass().getClassLoader().getResource("res/finishScreen.png")).getImage(); //게임 종료 화면
+	 //게임시작 전 화면
+
 	Image player = new ImageIcon(getClass().getClassLoader().getResource("res/player.png")).getImage(); //플레이어
 	Image enemy1 = new ImageIcon(getClass().getClassLoader().getResource("res/enemy1.gif")).getImage(); //몬스터 1
 	Image enemy2 = new ImageIcon(getClass().getClassLoader().getResource("res/enemy2.gif")).getImage(); //몬스터 2
@@ -79,11 +56,8 @@ public class Shooting extends JFrame{
 			new ImageIcon(getClass().getClassLoader().getResource("res/SUB1.png")).getImage(), //아이템 서브 비행기
 			new ImageIcon(getClass().getClassLoader().getResource("res/HEART2.png")).getImage()};  //아이템 하트 삭제
 
-
 	private Image bImage;
 	private Graphics screenGraphics;
-
-	private boolean isMainScreen,isExplainScreen, isGameScreen, isFinishScreen; //화면 전환을 위한 boolean 자료형
 
 	static int PLANE_WIDTH = 50; //비행기 가로크기
 	static int PLANE_HEIGHT = 50; //비행기 세로크기
@@ -103,9 +77,7 @@ public class Shooting extends JFrame{
 	ArrayList<Monster4> listM4 = new ArrayList<Monster4>();  //적4 객체
 	ArrayList<Item> listI = new ArrayList<Item>(); //아이템 객체
 	ArrayList<Heart> listH = new ArrayList<Heart>(); // 하트 객체
-	ArrayList<players> listN = new ArrayList<players>();//플레이어 이름 객체
 	ArrayList<SubPlane> listSP = new ArrayList<SubPlane>(); //서브 비행기 객체
-	ArrayList<playerInfo> highScoreList = new ArrayList<>(); //최고 득점자 객체
 	
 	//삭제 객체
 	ArrayList<A_Attack> ATRemove = new ArrayList<>(); 
@@ -127,92 +99,17 @@ public class Shooting extends JFrame{
 	boolean moveLeft = false;
 	boolean checkSpace = false;
 
-	 //배경 음악
-	public static void bgm() {
-		try {
-			File bgm = new File(path + "/res/bgm.wav");
-			Clip clip = AudioSystem.getClip();
-			clip.open(AudioSystem.getAudioInputStream(bgm));
-			clip.loop(10);
-			clip.start();
-		}catch(Exception e) {
-			System.out.println("Sound Error bgm");
-		}
-	}
 
-	 // 몬스터가 죽을 때 나는 소리
-	public static void boom() {
-		try {
-			File boom = new File(path + "/res/boom.wav");
-			Clip clip = AudioSystem.getClip();
-			clip.open(AudioSystem.getAudioInputStream(boom));
-			clip.loop(0);
-			clip.start();
-		}catch(Exception e) {
-			System.out.println("Sound Error bgm");
-		}
-	}
-	
-	// 파일 읽기
-	public void  FILERead() throws IOException { 
-		File file = new File("HIGHEST.txt");
-		Scanner s = null;
-		String fileName;
-		int fileScore;
-		
-		if(!file.exists())
-			file.createNewFile();
-		else {
-			try {
-				s = new Scanner(new BufferedReader(new FileReader(file)));
-				while(s.hasNext()) {
-					fileName = s.next();
-					fileScore = s.nextInt();
-					
-					highScoreList.add(new playerInfo(fileName, fileScore));
-				}
-			} finally {
-				if(s!=null)
-					s.close();
-			}
-		}
-	}
-	
-	//파일 쓰기
-	public void RecordWrite() throws IOException{
-		if(highScoreList.size() >= 3) {
-			for(int i = 1; i<highScoreList.size(); i++) {
-				if(highestPlayer.compareTo(highScoreList.get(i)) >0)
-					highestPlayer = highScoreList.get(i);
-			}
-		}
-		
-		PrintWriter out = null;
-		try {
-			out = new PrintWriter(path + "/HIGHEST.txt");
-			for(playerInfo pi : highScoreList) {
-				out.println(pi.getName());
-				out.println(pi.get());
-			}
-		}catch(IOException e) {
-			e.printStackTrace();
-		} finally {
-			if(out!=null)
-				out.close();
-		}
-	}
 
 	// 생성자 - Frame 기본설정, 패널 추가
-	Shooting() {			
-		
+	Shooting() {
 		//파일 불러오기
 		try {
-			FILERead();
+			gF.FILERead();
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("READ ERROR");
 		}
-		
 		//파일 비교
 		if(!highScoreList.isEmpty()) {
 			highestPlayer = highScoreList.get(0);
@@ -223,7 +120,6 @@ public class Shooting extends JFrame{
 				}
 			}
 		}
-		
 		//이름 저장
 		nameInput();
 
@@ -239,103 +135,48 @@ public class Shooting extends JFrame{
 		scoreLabel = new JLabel("SCORE: " + score);
 		levelLabel = new JLabel("LEVEL: " + level);
 
-		if(!highScoreList.isEmpty()) { //최고득점자가 있을 때 
-			highName = new JLabel("HIGHEST: " + highestPlayer.getName() + ", " + highestPlayer.get());
-			highName.setFont(new Font("FTLAB Hoony", Font.BOLD , 15));
+		if (!gF.highScoreList.isEmpty()) { //최고득점자가 있을 때
+			highName = new JLabel("HIGHEST: " + gF.highestPlayer.getName() + ", " + gF.highestPlayer.get());
+			highName.setFont(new Font("FTLAB Hoony", Font.BOLD, 15));
 			highName.setBounds(500, 920, 200, 30);
 			highName.setHorizontalAlignment(JLabel.CENTER);
 			highName.setForeground(Color.white);
-			
-		}else { //최고득점자가 없을 때 
-			highName = new JLabel("HIGHEST:"+" "+" NULL , NULL");
-			highName.setFont(new Font("FTLAB Hoony", Font.BOLD , 15));
+		} else { //최고득점자가 없을 때
+			highName = new JLabel("HIGHEST:" + " " + " NULL , NULL");
+			highName.setFont(new Font("FTLAB Hoony", Font.BOLD, 15));
 			highName.setBounds(500, 920, 200, 30);
 			highName.setHorizontalAlignment(JLabel.CENTER);
 			highName.setForeground(Color.white);
 		}
-		
 		//라벨 글씨체
-		nameLabel.setFont(new Font("FTLAB Hoony", Font.BOLD , 15));
-		scoreLabel.setFont(new Font("FTLAB Hoony", Font.BOLD , 15));
-		levelLabel.setFont(new Font("FTLAB Hoony", Font.BOLD , 15));
-		
+		nameLabel.setFont(new Font("FTLAB Hoony", Font.BOLD, 15));
+		scoreLabel.setFont(new Font("FTLAB Hoony", Font.BOLD, 15));
+		levelLabel.setFont(new Font("FTLAB Hoony", Font.BOLD, 15));
 		panel.setLayout(null);
-
 		//위치 선정//setBounds(x,y,가로,세로) 절대위치
 		nameLabel.setBounds(370, 950, 100, 30);
-		scoreLabel.setBounds(490, 950, 100, 30); 
+		scoreLabel.setBounds(490, 950, 100, 30);
 		levelLabel.setBounds(610, 950, 100, 30);
-		
-
 		//가운데 정렬
 		nameLabel.setHorizontalAlignment(JLabel.CENTER);
 		scoreLabel.setHorizontalAlignment(JLabel.CENTER);
 		levelLabel.setHorizontalAlignment(JLabel.CENTER);
-
 		//색 선정
 		nameLabel.setForeground(Color.white);
 		scoreLabel.setForeground(Color.white);
 		levelLabel.setForeground(Color.white);
 
 		this.add(panel);
-
 		this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 		this.setVisible(true);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setTitle("SHOOTING");
 		this.setResizable(false);
 
-		init(); //boolean형을 통해 mainScreen그려주기
-		name(); //이름 저장
-		bgm(); //배경음악
+		gF.init(); //boolean형을 통해 mainScreen그려주기
+		gF.name(); //이름 저장
+		gF.bgm(); //배경음악
 	}
-
-	//boolean형을 통해 mainScreen그려주기
-	public void init() {
-		isMainScreen = true;
-		isExplainScreen = false;
-		isGameScreen = false;
-		isFinishScreen = false;
-	}
-
-	//이름 저장
-	public void name() {
-		listN.add(new players(player_name));
-	}
-	
-	//화면 전환
-	public void screenDraw(Graphics g) { 
-		if(isMainScreen==true) {
-			g.drawImage(mainScreen,0,0,null);
-		}
-
-		if(isExplainScreen == true) {
-			g.drawImage(explainScreen, 0, 0, null);
-		}
-
-		if(isGameScreen==true) {
-			g.drawImage(gameScreen,0,0,null);
-		}
-
-		if(isFinishScreen == true) {
-			g.drawImage(finishScreen, 0, 0, null);
-		}
-	}
-
-	// 시작 전 사용자 이름 받기
-	public void nameInput() { 
-		for(;;) {
-			player_name = (String)JOptionPane.showInputDialog(this, "플레이어의 이름을 입력하세요(3자 이내)", "SHOOTING GAME", JOptionPane.PLAIN_MESSAGE);
-			if(player_name == null)
-				System.exit(0);
-			else if(player_name.length() > 3)
-				player_name = (String)JOptionPane.showInputDialog(this, "플레이어의 이름을 입력하세요(3자 이내)", "SHOOTING GAME", JOptionPane.PLAIN_MESSAGE);
-			else if(player_name.length() <= 3) {
-				break;
-			}
-		}
-	}
-
 	public static void main(String[] args) {
 		new Shooting();
 	}
@@ -448,8 +289,6 @@ public class Shooting extends JFrame{
 			}
 		}
 	}
-
-
 	class DrawPanel extends JPanel implements KeyListener {
 		public void paintComponent(Graphics g) {
 
@@ -507,7 +346,6 @@ public class Shooting extends JFrame{
 				scoreLabel.setBounds(210, 700, 300, 100); //setBounds(x,y,가로,세로) 절대위치
 				levelLabel.setBounds(210, 800, 300, 100);
 				highName.setBounds(110, 500, 500, 100);
-
 				nameLabel.setHorizontalAlignment(JLabel.CENTER);
 				scoreLabel.setHorizontalAlignment(JLabel.CENTER);
 				levelLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -534,7 +372,6 @@ public class Shooting extends JFrame{
 				level = 1;
 			if(score >= 15)
 				level = 2;
-
 
 
 			//객체 생성
@@ -671,7 +508,6 @@ public class Shooting extends JFrame{
 									else if(rand2 == 2)
 										listI.add(new Item(m3.getX(), m3.getY(), rand2, itemList[rand2]));
 								}
-
 							}
 						}
 					}
@@ -815,7 +651,6 @@ public class Shooting extends JFrame{
 		}
 
 
-
 		@Override
 		public void keyTyped(KeyEvent e) {}
 		
@@ -913,7 +748,6 @@ public class Shooting extends JFrame{
 		int y;
 		int w;
 		int h;
-
 		int moveX = 10;
 		int moveY = 10;
 
@@ -975,166 +809,3 @@ public class Shooting extends JFrame{
 		public int getX() {
 			return this.x;
 		}
-		public int getY() {
-			return this.y;
-		}
-
-	}
-	/*
-	//비행기가 공격
-	class Attack {
-		int pX;
-		int pY;
-		int width;
-		int height;
-
-		Attack(int x, int y){
-			pX = x;
-			pY = y;
-			width = 4;
-			height = 20;
-		}
-
-		public void moveA() {
-			pY -= 10;
-		}
-
-		public void drawA1(Graphics g2) { //비행기가 공격할때
-			g2.setColor(Color.yellow);
-			g2.fillRect(pX,pY,width,height);
-		}
-
-		public int getY() {
-			return pY;
-		}
-
-		public int getX() {
-			return pX;
-		}
-
-	}
-
-	
-	//몬스터 1이 하는 공격
-	class MAttack1{
-		int pX;
-		int pY;
-		int wid = 4;
-		int hei = 20;
-		Color color;
-
-		MAttack1(int x, int y, Color color){
-			pX = x+13;
-			pY = y+20;
-
-			this.color = color;
-		}
-
-		public void moveA() {
-			pY += 15;
-		}
-
-		public void drawMA(Graphics g) {
-			g.setColor(color);
-			g.fillRect(pX, pY, wid, hei);
-		}
-
-		public int getY() {
-			return pY;
-		}
-
-		public int getX() {
-			return pX;
-		}
-	}
-
-	//몬스터 3이 하는 공격
-	class MAttack2{
-		int pX;
-		int pY;
-		int wid = 4;
-		int hei = 20;
-		Color color;
-
-		MAttack2(int x, int y, Color color){
-			pX = x+20;
-			pY = y+45;
-
-			this.color = color;
-		}
-
-		public void moveA() {
-			pY += 15;
-		}
-
-		public void drawMA(Graphics g) {
-			g.setColor(color);
-			g.fillRect(pX, pY, wid, hei);
-		}
-
-		public int getY() {
-			return pY;
-		}
-
-		public int getX() {
-			return pX;
-		}
-
-	}
-	*/
-	
-	//생명력을 나타내는 하트
-	class Heart{
-		int index;
-
-		Heart(int i){
-			index = i;
-		}
-
-		public void drawH(Graphics g) {
-			g.drawImage(heart1, 30+index*30, 950, 27, 21, null);
-		}
-	}
-	
-	//플레이어 이름
-	class players{
-		String name;
-
-		players(String player_name){
-			this.name = player_name;
-		}
-
-		public String name() {
-			return this.name;
-		}
-	}
-	
-	//최고 득점자 비교
-	class playerInfo{
-		String name;
-		int score;
-		
-		playerInfo(String name, int score){
-			this.name = name;
-			this.score = score;
-		}
-		
-		public int compareTo(playerInfo playerInfo) {
-			if(playerInfo.score>this.score)
-				return 1;
-			else
-				return 0;
-		}
-		
-		public void printInfo() {
-			System.out.println("Name: " + name + ", SCORE: " + score);
-		}
-		public String getName() {
-			return name;
-		}
-		public int get() {
-			return score;
-		}
-	}
-
-}
