@@ -29,7 +29,7 @@ public class Shooting extends JFrame {
 
 	Timer t; //비행기 타이머
 	Timer at; //공격 타이머
-
+//
 
 
 
